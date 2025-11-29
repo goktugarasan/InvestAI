@@ -8,6 +8,7 @@ namespace InvestAI
         [STAThread]
         static void Main()
         {
+            //Test
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
