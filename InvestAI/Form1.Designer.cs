@@ -27,18 +27,44 @@
         /// </summary>
         private void InitializeComponent()
         {
+            textBox1 = new TextBox();
+            button1 = new Button();
             SuspendLayout();
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(103, 130);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(650, 39);
+            textBox1.TabIndex = 0;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(323, 218);
+            button1.Name = "button1";
+            button1.Size = new Size(150, 46);
+            button1.TabIndex = 1;
+            button1.Text = "Test";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(812, 450);
+            Controls.Add(button1);
+            Controls.Add(textBox1);
+            Margin = new Padding(4, 4, 4, 4);
             Name = "Form1";
             Text = "InvestAI";
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
+
+        private TextBox textBox1;
+        private Button button1;
     }
 }
