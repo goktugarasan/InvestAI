@@ -19,8 +19,6 @@
             }
             base.Dispose(disposing);
         }
-        // test satırı :D
-        //sa
         #region Windows Form Designer generated code
 
         /// <summary>
