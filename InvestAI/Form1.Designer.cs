@@ -27,45 +27,72 @@
         /// </summary>
         private void InitializeComponent()
         {
-            textBox1 = new TextBox();
-            button1 = new Button();
+            mainPanel = new Panel();
+            bottomPanel = new Panel();
+            notifsButton = new Button();
+            dashboardButton = new Button();
+            bottomPanel.SuspendLayout();
             SuspendLayout();
             // 
-            // textBox1
+            // mainPanel
             // 
-            textBox1.Location = new Point(103, 130);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(650, 39);
-            textBox1.TabIndex = 0;
+            mainPanel.Dock = DockStyle.Fill;
+            mainPanel.Location = new Point(0, 0);
+            mainPanel.Name = "mainPanel";
+            mainPanel.Size = new Size(843, 429);
+            mainPanel.TabIndex = 0;
             // 
-            // button1
+            // bottomPanel
             // 
-            button1.Location = new Point(323, 218);
-            button1.Name = "button1";
-            button1.Size = new Size(150, 46);
-            button1.TabIndex = 1;
-            button1.Text = "Test";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            bottomPanel.Controls.Add(notifsButton);
+            bottomPanel.Controls.Add(dashboardButton);
+            bottomPanel.Dock = DockStyle.Bottom;
+            bottomPanel.Location = new Point(0, 429);
+            bottomPanel.Name = "bottomPanel";
+            bottomPanel.Size = new Size(843, 30);
+            bottomPanel.TabIndex = 2;
+            // 
+            // notifsButton
+            // 
+            notifsButton.Location = new Point(509, 7);
+            notifsButton.Name = "notifsButton";
+            notifsButton.Size = new Size(171, 23);
+            notifsButton.TabIndex = 1;
+            notifsButton.Text = "Bildirimler";
+            notifsButton.UseVisualStyleBackColor = true;
+            notifsButton.Click += notifsButton_Click;
+            // 
+            // dashboardButton
+            // 
+            dashboardButton.Location = new Point(185, 7);
+            dashboardButton.Name = "dashboardButton";
+            dashboardButton.Size = new Size(159, 23);
+            dashboardButton.TabIndex = 0;
+            dashboardButton.Text = "Özetiniz";
+            dashboardButton.UseVisualStyleBackColor = true;
+            dashboardButton.Click += button1_Click_1;
             // 
             // Form1
             // 
-            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(812, 450);
-            Controls.Add(button1);
-            Controls.Add(textBox1);
-            Margin = new Padding(4, 4, 4, 4);
+            ClientSize = new Size(843, 459);
+            Controls.Add(mainPanel);
+            Controls.Add(bottomPanel);
+            Margin = new Padding(2);
             Name = "Form1";
             Text = "InvestAI";
+            Load += Form1_Load;
+            bottomPanel.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
-        #endregion
+        private Panel mainPanel;
+        private Panel bottomPanel;
+        private Button notifsButton;
+        private Button dashboardButton;
 
-        private TextBox textBox1;
-        private Button button1;
+        #endregion
 
         //test ediyorum
     }
