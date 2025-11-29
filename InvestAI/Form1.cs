@@ -6,5 +6,18 @@ namespace InvestAI
         {
             InitializeComponent();
         }
+
+        private void registerButton_Click(object sender, EventArgs e)
+        {
+            RegisterScreen registerScreen = new RegisterScreen();
+            registerScreen.ShowDialog();
+            this.Close();
+
+        }
+
+        private void loginButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }
