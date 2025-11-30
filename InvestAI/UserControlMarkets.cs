@@ -19,5 +19,9 @@ namespace InvestAI
             stockGridView.Rows.Add("NVDA", "177.00", "- 3.26", "121M");
         }
 
+        private void stockGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }

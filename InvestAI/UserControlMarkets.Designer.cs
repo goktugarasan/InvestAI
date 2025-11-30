@@ -38,20 +38,23 @@
             dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn3 = new DataGridViewTextBoxColumn();
             dataGridViewTextBoxColumn4 = new DataGridViewTextBoxColumn();
+            panel1 = new Panel();
+            panel2 = new Panel();
             ((System.ComponentModel.ISupportInitialize)cryptoGridView).BeginInit();
             ((System.ComponentModel.ISupportInitialize)stockGridView).BeginInit();
+            panel1.SuspendLayout();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // cryptoGridView
             // 
-            cryptoGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             cryptoGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             cryptoGridView.Columns.AddRange(new DataGridViewColumn[] { CryptoColumn1, CryptoColumn2, CryptoColumn3, CryptoColumn4 });
-            cryptoGridView.Dock = DockStyle.Left;
+            cryptoGridView.Dock = DockStyle.Fill;
             cryptoGridView.Location = new Point(0, 0);
             cryptoGridView.Name = "cryptoGridView";
             cryptoGridView.RowHeadersWidth = 62;
-            cryptoGridView.Size = new Size(777, 877);
+            cryptoGridView.Size = new Size(788, 877);
             cryptoGridView.TabIndex = 0;
             // 
             // CryptoColumn1
@@ -88,11 +91,12 @@
             stockGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             stockGridView.Columns.AddRange(new DataGridViewColumn[] { dataGridViewTextBoxColumn1, dataGridViewTextBoxColumn2, dataGridViewTextBoxColumn3, dataGridViewTextBoxColumn4 });
             stockGridView.Dock = DockStyle.Fill;
-            stockGridView.Location = new Point(777, 0);
+            stockGridView.Location = new Point(0, 0);
             stockGridView.Name = "stockGridView";
             stockGridView.RowHeadersWidth = 62;
-            stockGridView.Size = new Size(791, 877);
+            stockGridView.Size = new Size(780, 877);
             stockGridView.TabIndex = 4;
+            stockGridView.CellContentClick += stockGridView_CellContentClick;
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -122,21 +126,41 @@
             dataGridViewTextBoxColumn4.MinimumWidth = 8;
             dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(cryptoGridView);
+            panel1.Dock = DockStyle.Left;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(788, 877);
+            panel1.TabIndex = 5;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(stockGridView);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(788, 0);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(780, 877);
+            panel2.TabIndex = 6;
+            // 
             // UserControlMarkets
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(stockGridView);
-            Controls.Add(cryptoGridView);
+            Controls.Add(panel2);
+            Controls.Add(panel1);
             Name = "UserControlMarkets";
             Size = new Size(1568, 877);
             ((System.ComponentModel.ISupportInitialize)cryptoGridView).EndInit();
             ((System.ComponentModel.ISupportInitialize)stockGridView).EndInit();
+            panel1.ResumeLayout(false);
+            panel2.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
-    
+
         private DataGridView cryptoGridView;
         private Label cryptoLabel;
         private Label stockLabel;
@@ -149,5 +173,7 @@
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private Panel panel1;
+        private Panel panel2;
     }
 }

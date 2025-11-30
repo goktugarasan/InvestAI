@@ -57,8 +57,9 @@
             // 
             // Username
             // 
+            Username.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             Username.AutoSize = true;
-            Username.Location = new Point(1106, 88);
+            Username.Location = new Point(1150, 91);
             Username.Name = "Username";
             Username.Size = new Size(121, 32);
             Username.TabIndex = 4;
@@ -67,7 +68,7 @@
             // signInButton
             // 
             signInButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            signInButton.Location = new Point(1069, 40);
+            signInButton.Location = new Point(1070, 40);
             signInButton.Name = "signInButton";
             signInButton.Size = new Size(135, 45);
             signInButton.TabIndex = 3;
