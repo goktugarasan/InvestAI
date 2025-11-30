@@ -85,6 +85,7 @@
             Load += Form1_Load;
             bottomPanel.ResumeLayout(false);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         private Panel mainPanel;
