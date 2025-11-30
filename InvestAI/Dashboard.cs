@@ -10,28 +10,36 @@ using System.Windows.Forms;
 
 namespace InvestAI
 {
-    public partial class Dashboard : Form
+    public partial class Dashboard : UserControl
     {
-        UserControlMarkets userControlMarkets = new UserControlMarkets();
         public Dashboard()
         {
             InitializeComponent();
-            Username.Visible = false;
         }
 
-        private void signInButton_Click(object sender, EventArgs e)
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            Form1 form1 = new Form1();
-            form1.ShowDialog();
-            signInButton.Visible = false;
-            Username.Visible = true;
+
         }
 
-        private void marketsButton_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            mainPanel.Controls.Clear();
-            userControlMarkets.Dock= DockStyle.Fill;
-            mainPanel.Controls.Add(userControlMarkets);
+            dgv.Rows.Clear();
+            // Ornek veri ekleme
+            dgv.Rows.Add("BTC", "4398092", "AL");
+            dgv.Rows.Add("burger king", "3332", "SAT");
+
+        }
+
+        private void Dashboard_Load(object sender, EventArgs e)
+        {
+            dgv.Rows.Add("BTC", "1221", "TUT");
+            dgv.Rows.Add("burger king", "3332", "AL");
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

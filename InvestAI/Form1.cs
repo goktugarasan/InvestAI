@@ -7,17 +7,35 @@ namespace InvestAI
             InitializeComponent();
         }
 
-        private void registerButton_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            RegisterScreen registerScreen = new RegisterScreen();
-            registerScreen.ShowDialog();
-            this.Close();
 
         }
 
-        private void loginButton_Click(object sender, EventArgs e)
+        private void flowLayoutPanel1_Paint(object sender, PaintEventArgs e)
         {
-            this.Close();
+
+        }
+        private void loadControl(UserControl uc)
+        {
+            mainPanel.Controls.Clear();
+            uc.Dock = DockStyle.Fill;
+            mainPanel.Controls.Add(uc);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            loadControl(new Dashboard());
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            loadControl(new Dashboard());
+        }
+
+        private void notifsButton_Click(object sender, EventArgs e)
+        {
+            loadControl(new Notifications());
         }
     }
 }
