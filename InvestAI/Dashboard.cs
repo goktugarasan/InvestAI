@@ -12,6 +12,7 @@ namespace InvestAI
 {
     public partial class Dashboard : Form
     {
+        UserControlMarkets userControlMarkets = new UserControlMarkets();
         public Dashboard()
         {
             InitializeComponent();
@@ -24,6 +25,13 @@ namespace InvestAI
             form1.ShowDialog();
             signInButton.Visible = false;
             Username.Visible = true;
+        }
+
+        private void marketsButton_Click(object sender, EventArgs e)
+        {
+            mainPanel.Controls.Clear();
+            userControlMarkets.Dock= DockStyle.Fill;
+            mainPanel.Controls.Add(userControlMarkets);
         }
     }
 }

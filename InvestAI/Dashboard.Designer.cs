@@ -33,13 +33,14 @@
             signInButton = new Button();
             appName = new Label();
             searchBar = new TextBox();
-            panel2 = new Panel();
-            walletButton = new Button();
-            portfolioButton = new Button();
-            marketsButton = new Button();
+            mainPanel = new Panel();
+            flowLayoutPanel1 = new FlowLayoutPanel();
             homeButton = new Button();
+            marketsButton = new Button();
+            portfolioButton = new Button();
+            walletButton = new Button();
             panel1.SuspendLayout();
-            panel2.SuspendLayout();
+            flowLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
             // panel1
@@ -65,6 +66,7 @@
             // 
             // signInButton
             // 
+            signInButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             signInButton.Location = new Point(1069, 40);
             signInButton.Name = "signInButton";
             signInButton.Size = new Size(135, 45);
@@ -90,60 +92,74 @@
             searchBar.Size = new Size(696, 39);
             searchBar.TabIndex = 0;
             // 
-            // panel2
+            // mainPanel
             // 
-            panel2.Controls.Add(walletButton);
-            panel2.Controls.Add(portfolioButton);
-            panel2.Controls.Add(marketsButton);
-            panel2.Controls.Add(homeButton);
-            panel2.Dock = DockStyle.Left;
-            panel2.Location = new Point(0, 123);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(225, 643);
-            panel2.TabIndex = 1;
+            mainPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            mainPanel.Location = new Point(225, 123);
+            mainPanel.Name = "mainPanel";
+            mainPanel.Size = new Size(1046, 643);
+            mainPanel.TabIndex = 2;
             // 
-            // walletButton
+            // flowLayoutPanel1
             // 
-            walletButton.Location = new Point(0, 388);
-            walletButton.Name = "walletButton";
-            walletButton.Size = new Size(228, 77);
-            walletButton.TabIndex = 7;
-            walletButton.Text = "Wallet";
-            walletButton.UseVisualStyleBackColor = true;
-            // 
-            // portfolioButton
-            // 
-            portfolioButton.Location = new Point(0, 271);
-            portfolioButton.Name = "portfolioButton";
-            portfolioButton.Size = new Size(228, 77);
-            portfolioButton.TabIndex = 6;
-            portfolioButton.Text = "Portfolio";
-            portfolioButton.UseVisualStyleBackColor = true;
-            // 
-            // marketsButton
-            // 
-            marketsButton.Location = new Point(-3, 153);
-            marketsButton.Name = "marketsButton";
-            marketsButton.Size = new Size(228, 77);
-            marketsButton.TabIndex = 3;
-            marketsButton.Text = "Markets";
-            marketsButton.UseVisualStyleBackColor = true;
+            flowLayoutPanel1.Controls.Add(homeButton);
+            flowLayoutPanel1.Controls.Add(marketsButton);
+            flowLayoutPanel1.Controls.Add(portfolioButton);
+            flowLayoutPanel1.Controls.Add(walletButton);
+            flowLayoutPanel1.Dock = DockStyle.Left;
+            flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
+            flowLayoutPanel1.Location = new Point(0, 123);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(225, 643);
+            flowLayoutPanel1.TabIndex = 0;
             // 
             // homeButton
             // 
-            homeButton.Location = new Point(0, 40);
+            homeButton.Location = new Point(3, 3);
             homeButton.Name = "homeButton";
             homeButton.Size = new Size(225, 77);
             homeButton.TabIndex = 2;
             homeButton.Text = "Home";
             homeButton.UseVisualStyleBackColor = true;
             // 
+            // marketsButton
+            // 
+            marketsButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            marketsButton.Location = new Point(3, 86);
+            marketsButton.Name = "marketsButton";
+            marketsButton.Size = new Size(228, 77);
+            marketsButton.TabIndex = 3;
+            marketsButton.Text = "Markets";
+            marketsButton.UseVisualStyleBackColor = true;
+            marketsButton.Click += marketsButton_Click;
+            // 
+            // portfolioButton
+            // 
+            portfolioButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            portfolioButton.Location = new Point(3, 169);
+            portfolioButton.Name = "portfolioButton";
+            portfolioButton.Size = new Size(228, 77);
+            portfolioButton.TabIndex = 6;
+            portfolioButton.Text = "Portfolio";
+            portfolioButton.UseVisualStyleBackColor = true;
+            // 
+            // walletButton
+            // 
+            walletButton.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            walletButton.Location = new Point(3, 252);
+            walletButton.Name = "walletButton";
+            walletButton.Size = new Size(228, 77);
+            walletButton.TabIndex = 7;
+            walletButton.Text = "Wallet";
+            walletButton.UseVisualStyleBackColor = true;
+            // 
             // Dashboard
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1271, 766);
-            Controls.Add(panel2);
+            Controls.Add(flowLayoutPanel1);
+            Controls.Add(mainPanel);
             Controls.Add(panel1);
             Font = new Font("Segoe UI", 12F);
             Margin = new Padding(4);
@@ -151,21 +167,22 @@
             Text = "InvestAI";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
-            panel2.ResumeLayout(false);
+            flowLayoutPanel1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
         #endregion
 
         private Panel panel1;
-        private Panel panel2;
         private Label appName;
         private Button signInButton;
         private TextBox searchBar;
-        private Button marketsButton;
-        private Button homeButton;
-        private Button portfolioButton;
         private Label Username;
+        private Panel mainPanel;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private Button homeButton;
+        private Button marketsButton;
+        private Button portfolioButton;
         private Button walletButton;
     }
 }
