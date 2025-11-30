@@ -137,14 +137,14 @@
 
         #endregion
     
-        protected DataGridView cryptoGridView;
+        private DataGridView cryptoGridView;
         private Label cryptoLabel;
         private Label stockLabel;
         private DataGridViewTextBoxColumn CryptoColumn1;
         private DataGridViewTextBoxColumn CryptoColumn2;
         private DataGridViewTextBoxColumn CryptoColumn3;
         private DataGridViewTextBoxColumn CryptoColumn4;
-        protected DataGridView stockGridView;
+        private DataGridView stockGridView;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
