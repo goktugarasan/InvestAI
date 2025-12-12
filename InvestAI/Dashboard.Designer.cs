@@ -62,7 +62,7 @@
             button1.Location = new Point(573, 3);
             button1.Margin = new Padding(2, 1, 2, 1);
             button1.Name = "button1";
-            button1.Size = new Size(81, 22);
+            button1.Size = new Size(81, 32);
             button1.TabIndex = 2;
             button1.Text = "Yenile";
             button1.UseVisualStyleBackColor = false;
@@ -89,13 +89,13 @@
             dgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv.Columns.AddRange(new DataGridViewColumn[] { name, price, signal });
             dgv.Dock = DockStyle.Fill;
-            dgv.Location = new Point(0, 30);
+            dgv.Location = new Point(0, 37);
             dgv.Margin = new Padding(2, 1, 2, 1);
             dgv.Name = "dgv";
             dgv.ReadOnly = true;
             dgv.RowHeadersVisible = false;
             dgv.RowHeadersWidth = 82;
-            dgv.Size = new Size(660, 364);
+            dgv.Size = new Size(660, 357);
             dgv.TabIndex = 0;
             dgv.CellContentClick += dataGridView1_CellContentClick;
             // 
@@ -128,7 +128,7 @@
             label1.Location = new Point(0, 0);
             label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
-            label1.Size = new Size(101, 30);
+            label1.Size = new Size(125, 37);
             label1.TabIndex = 1;
             label1.Text = "Özetiniz";
             label1.TextAlign = ContentAlignment.TopCenter;
