@@ -69,6 +69,24 @@ namespace InvestAI
             }
         }
 
+        public void RemoveCoinFromGrid(string symbol)
+        {
+            for (int i = cryptoGridView.Rows.Count - 1; i >= 0; i--)
+            {
+                var row = cryptoGridView.Rows[i];
+                if (row.Tag as string == symbol)
+                {
+                    cryptoGridView.Rows.RemoveAt(i);
+                    
+                    for (int j = i; j < cryptoGridView.Rows.Count; j++)
+                    {
+                        cryptoGridView.Rows[j].Cells[0].Value = j + 1;
+                    }
+                    break;
+                }
+            }
+        }
+
         private void stockGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 

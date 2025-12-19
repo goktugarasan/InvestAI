@@ -41,7 +41,8 @@ namespace InvestAI
             userControlMarkets = new UserControlMarkets();
             userControlMarkets.CoinSelected += OnCoinSelected;
             userControlMarkets.Dock = DockStyle.Fill;
-            userControlMarkets.LoadAllCoins();mainPanel.Controls.Add(userControlMarkets);// Hide favorite button when viewing all markets
+            userControlMarkets.LoadAllCoins();
+            mainPanel.Controls.Add(userControlMarkets);
             favoriteButton.Visible = false;
             selectedCoinSymbol = null;
         }
@@ -90,22 +91,18 @@ namespace InvestAI
 
             if (favoritesService.IsFavorite(selectedCoinSymbol))
             {
-                // Remove from favorites
                 favoritesService.RemoveFavorite(selectedCoinSymbol);
                 favoriteButton.Text = "Add to Favorites";
 
-                // If we're showing favorites, refresh the list
                 if (isShowingFavorites)
                 {
-                    var favorites = favoritesService.GetFavorites();
-                    userControlMarkets.LoadFavoriteCoins(favorites);
+                    userControlMarkets.RemoveCoinFromGrid(selectedCoinSymbol);
                     favoriteButton.Visible = false;
                     selectedCoinSymbol = null;
                 }
             }
             else
             {
-                // Add to favorites
                 favoritesService.AddFavorite(selectedCoinSymbol);
                 favoriteButton.Text = "Remove from Favorites";
             }
