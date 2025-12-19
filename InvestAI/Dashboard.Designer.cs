@@ -1,4 +1,4 @@
-﻿namespace InvestAI
+namespace InvestAI
 {
     partial class Dashboard
     {
@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             panel1 = new Panel();
+            favoriteButton = new Button();
             Username = new Label();
             signInButton = new Button();
             appName = new Label();
@@ -45,6 +46,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(favoriteButton);
             panel1.Controls.Add(Username);
             panel1.Controls.Add(signInButton);
             panel1.Controls.Add(appName);
@@ -54,6 +56,18 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1271, 123);
             panel1.TabIndex = 0;
+            // 
+            // favoriteButton
+            // 
+            favoriteButton.BackColor = Color.LightSkyBlue;
+            favoriteButton.Location = new Point(1020, 46);
+            favoriteButton.Name = "favoriteButton";
+            favoriteButton.Size = new Size(200, 45);
+            favoriteButton.TabIndex = 5;
+            favoriteButton.Text = "Add to Favorites";
+            favoriteButton.UseVisualStyleBackColor = false;
+            favoriteButton.Visible = false;
+            favoriteButton.Click += favoriteButton_Click;
             // 
             // Username
             // 
@@ -122,6 +136,7 @@
             homeButton.TabIndex = 2;
             homeButton.Text = "Home";
             homeButton.UseVisualStyleBackColor = true;
+            homeButton.Click += homeButton_Click;
             // 
             // marketsButton
             // 
@@ -185,5 +200,6 @@
         private Button marketsButton;
         private Button portfolioButton;
         private Button walletButton;
+        private Button favoriteButton;
     }
 }
