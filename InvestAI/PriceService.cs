@@ -35,20 +35,20 @@ namespace InvestAI
         }
 
         //get top 50 most popular coins in the last 24h
-        public async Task<List<(string Symbol, decimal Price, decimal Volume)>> GetTop50CoinsAsync()
+        public async Task<List<(string Symbol, decimal Price, decimal Volume,decimal Change)>> GetTop50CoinsAsync()
         {
             var result = await _client.SpotApi.ExchangeData.GetTickersAsync();
 
             if (!result.Success)
             {
-                return new List<(string, decimal, decimal)>();
+                return new List<(string, decimal, decimal,decimal)>();
             }
 
             return result.Data
                 .Where(t => t.Symbol.EndsWith("USDT"))
                 .OrderByDescending(t => t.QuoteVolume)  //sort by trade volume
                 .Take(50)
-                .Select(t => (t.Symbol, t.LastPrice, t.QuoteVolume))
+                .Select(t => (t.Symbol, t.LastPrice, t.QuoteVolume,t.PriceChangePercent))
                 .ToList();
         }
         public async Task<List<ScottPlot.OHLC>> GetKlinesAsync(string symbol,KlineInterval interval,int limit)

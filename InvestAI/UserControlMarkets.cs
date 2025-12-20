@@ -1,3 +1,4 @@
+using ScottPlot;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,8 +18,6 @@ namespace InvestAI
         public UserControlMarkets()
         {
             InitializeComponent();
-
-            // Wire up the CellClick event in addition to CellContentClick
             cryptoGridView.CellClick += cryptoGridView_CellClick;
             foreach (Control c in flowLayoutPanel1.Controls)
             {
@@ -38,13 +37,23 @@ namespace InvestAI
             foreach (var coin in topCoins)
             {
                 var csymbol = coin.Symbol.Remove(coin.Symbol.LastIndexOf("USDT"));
-                
+
                 // Add() returns the row index - use it!
-                int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"${coin.Price}", "{change}", $"{coin.Volume}");
+                string change = $"{coin.Change:F2}%";
+                int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"${coin.Price}", change, $"{coin.Volume}");
                 
                 // Store the full symbol (including USDT) in the Tag property
                 cryptoGridView.Rows[rowIndex].Tag = coin.Symbol;
-                
+                if (coin.Change < 0)
+                {
+                    cryptoGridView.Rows[rowIndex].Cells[3].Style.ForeColor = System.Drawing.Color.Red;
+                }
+                else if (coin.Change > 0)
+                {
+                    cryptoGridView.Rows[rowIndex].Cells[3].Value = $"+{change}";
+                    cryptoGridView.Rows[rowIndex].Cells[3].Style.ForeColor = System.Drawing.Color.Green;
+                }
+
                 rank++;
             }
         }
@@ -131,13 +140,31 @@ namespace InvestAI
             {
                 cryptoChart.Plot.Clear();
                 var candles = cryptoChart.Plot.Add.Candlestick(ohlcs);
+                candles.Axes.YAxis = cryptoChart.Plot.Axes.Right;
+                double[] closePrices = ohlcs.Select(x => (double)x.Close).ToArray();
+                double[] allDates = ohlcs.Select(x => x.DateTime.ToOADate()).ToArray();
+                AddMovingAverage(closePrices, allDates, 20, ScottPlot.Colors.Yellow);
+                AddMovingAverage(closePrices, allDates, 50, ScottPlot.Colors.Blue);
                 cryptoChart.Plot.Axes.DateTimeTicksBottom();
                 cryptoChart.Plot.Axes.AutoScale();
                 cryptoChart.Plot.Title($"{symbol.Remove(symbol.LastIndexOf("USDT"))} ({duration})");
+                cryptoChart.Plot.Axes.Left.TickLabelStyle.IsVisible = false;
+                cryptoChart.Plot.Axes.Left.FrameLineStyle.IsVisible = false;
                 cryptoChart.Refresh();
             }
 
             CoinSelected?.Invoke(this, symbol);
+        }
+        private void AddMovingAverage(double[] closePrices, double[] allDates,int windowSize,ScottPlot.Color color)
+        {
+            double[] maValues = ScottPlot.Statistics.Series.MovingAverage(closePrices, windowSize);
+            double[] maDates= allDates.Skip(windowSize-1).ToArray();
+            var sp = cryptoChart.Plot.Add.Scatter(maDates, maValues);
+            sp.Color = color;
+            sp.LineWidth = 2;
+            sp.MarkerSize = 0;
+            sp.LegendText = $"{windowSize} Day Moving Average"; 
+            sp.Axes.YAxis=cryptoChart.Plot.Axes.Right;
         }
     }
 }
