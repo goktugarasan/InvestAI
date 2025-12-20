@@ -20,10 +20,14 @@ namespace InvestAI
 
             // Wire up the CellClick event in addition to CellContentClick
             cryptoGridView.CellClick += cryptoGridView_CellClick;
-
-            
+            foreach (Control c in flowLayoutPanel1.Controls)
+            {
+                if (c is Button btn)
+                {
+                    btn.Click += async (s, e) => await HandleCoinSelection(btn.Text);
+                }
+            }
         }
-
         public async void LoadAllCoins()
         {
             cryptoGridView.Rows.Clear();
@@ -92,32 +96,48 @@ namespace InvestAI
 
         }
 
-        private void cryptoGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private async void cryptoGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.RowIndex < cryptoGridView.Rows.Count)
-            {
-                var row = cryptoGridView.Rows[e.RowIndex];
-                var symbol = row.Tag as string;
-
-                if (!string.IsNullOrEmpty(symbol))
-                {
-                    CoinSelected?.Invoke(this, symbol);
-                }
-            }
+            await HandleCoinSelection("1 Day");
         }
 
-        private void cryptoGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        private async void cryptoGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.RowIndex < cryptoGridView.Rows.Count)
-            {
-                var row = cryptoGridView.Rows[e.RowIndex];
-                var symbol = row.Tag as string;
+            await HandleCoinSelection("1 Day");
+        }
 
-                if (!string.IsNullOrEmpty(symbol))
-                {
-                    CoinSelected?.Invoke(this, symbol);
-                }
+        private async Task HandleCoinSelection(string duration = "1 Day")
+        {
+            var currentRow = cryptoGridView.CurrentRow;
+
+            if (currentRow == null || currentRow.Tag == null) return;
+
+            string symbol = currentRow.Tag.ToString();
+
+            (Binance.Net.Enums.KlineInterval interval, int limit) = duration switch
+            {
+                "1 Day" => (Binance.Net.Enums.KlineInterval.FifteenMinutes, 96),
+                "5 Days" => (Binance.Net.Enums.KlineInterval.OneHour, 120),
+                "1 Month" => (Binance.Net.Enums.KlineInterval.FourHour, 180),
+                "6 Month" => (Binance.Net.Enums.KlineInterval.OneDay, 180),
+                "1 Year" => (Binance.Net.Enums.KlineInterval.OneDay, 365),
+                _ => (Binance.Net.Enums.KlineInterval.FifteenMinutes, 96)
+            };
+
+            var priceService = new PriceService();
+            var ohlcs = await priceService.GetKlinesAsync(symbol, interval, limit);
+
+            if (ohlcs != null && ohlcs.Any())
+            {
+                cryptoChart.Plot.Clear();
+                var candles = cryptoChart.Plot.Add.Candlestick(ohlcs);
+                cryptoChart.Plot.Axes.DateTimeTicksBottom();
+                cryptoChart.Plot.Axes.AutoScale();
+                cryptoChart.Plot.Title($"{symbol.Remove(symbol.LastIndexOf("USDT"))} ({duration})");
+                cryptoChart.Refresh();
             }
+
+            CoinSelected?.Invoke(this, symbol);
         }
     }
 }

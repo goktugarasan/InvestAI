@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Binance.Net" Version="11.11.0" />
+    <PackageReference Include="ScottPlot.WinForms" Version="5.1.57" />
   </ItemGroup>
 
 </Project>

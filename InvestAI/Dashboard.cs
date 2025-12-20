@@ -20,18 +20,9 @@ namespace InvestAI
         public Dashboard()
         {
             InitializeComponent();
-            Username.Visible = false;
 
             // Subscribe to CoinSelected event
             userControlMarkets.CoinSelected += OnCoinSelected;
-        }
-
-        private void signInButton_Click(object sender, EventArgs e)
-        {
-            Form1 form1 = new Form1();
-            form1.ShowDialog();
-            signInButton.Visible = false;
-            Username.Visible = true;
         }
 
         private void marketsButton_Click(object sender, EventArgs e)
@@ -82,6 +73,7 @@ namespace InvestAI
             {
                 favoriteButton.Text = "Add to Favorites";
             }
+
         }
 
         private void favoriteButton_Click(object sender, EventArgs e)

@@ -1,5 +1,6 @@
 ﻿using Binance.Net;
 using Binance.Net.Clients;
+using Binance.Net.Enums;
 using CryptoExchange.Net.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,30 @@ namespace InvestAI
                 .Take(50)
                 .Select(t => (t.Symbol, t.LastPrice, t.QuoteVolume))
                 .ToList();
+        }
+        public async Task<List<ScottPlot.OHLC>> GetKlinesAsync(string symbol,KlineInterval interval,int limit)
+        {
+            var result=await _client.SpotApi.ExchangeData.GetKlinesAsync(symbol,interval,limit:limit);
+            if (!result.Success) { return new List<ScottPlot.OHLC>(); }
+            TimeSpan period = interval switch
+            {
+                KlineInterval.OneMinute => TimeSpan.FromMinutes(1),
+                KlineInterval.FiveMinutes => TimeSpan.FromMinutes(5),
+                KlineInterval.FifteenMinutes => TimeSpan.FromMinutes(15),
+                KlineInterval.OneHour => TimeSpan.FromHours(1),
+                KlineInterval.OneDay => TimeSpan.FromDays(1),
+                _ => TimeSpan.FromMinutes(15)
+            };
+
+            return result.Data.Select(k => new ScottPlot.OHLC(
+                (double)k.OpenPrice,
+                (double)k.HighPrice,
+                (double)k.LowPrice,
+                (double)k.ClosePrice,
+                k.OpenTime,
+                period
+            )).ToList();
+
         }
         
     }
