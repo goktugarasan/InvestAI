@@ -24,6 +24,8 @@ namespace InvestAI
         private ScottPlot.Plottables.Marker _marker;
         private string _activeduration;
         private string _activecoin;
+        private Panel _loadingPanel;
+        private System.Windows.Forms.Label _loadingLabel;
 
         // Theme colors
         private readonly System.Drawing.Color darkBg = System.Drawing.Color.FromArgb(18, 20, 24);
@@ -47,13 +49,7 @@ namespace InvestAI
 
             // Apply modern theme
             ApplyModernTheme();
-            loadingPanel.Paint += (s, e) =>
-            {
-                using (Pen p = new Pen(System.Drawing.Color.FromArgb(60, 65, 75), 1))
-                {
-                    e.Graphics.DrawRectangle(p, 0, 0, loadingPanel.Width - 1, loadingPanel.Height - 1);
-                }
-            };
+            InitializeLoadingControl();
             flowLayoutPanel1.AutoSize = false;
             flowLayoutPanel1.Height = 70;
             flowLayoutPanel1.MaximumSize = new Size(0, 70);
@@ -69,6 +65,7 @@ namespace InvestAI
             timer1.Start();
             cryptoGridView.CellClick += cryptoGridView_CellClick;
             cryptoChart.MouseMove += cryptoChart_MouseMove;
+            this.Resize += (s, e) => CenterLoadingPanel();
             typeof(DataGridView).InvokeMember("DoubleBuffered",System.Reflection.BindingFlags.NonPublic |System.Reflection.BindingFlags.Instance |System.Reflection.BindingFlags.SetProperty,null, cryptoGridView, new object[] { true });
             foreach (Control c in flowLayoutPanel1.Controls)
             {
@@ -277,10 +274,7 @@ namespace InvestAI
 
         public async void LoadAllCoins()
         {
-            loadingPanel.Visible = true;
-            loadingPanel.BringToFront();
-            loadingLabel.Text = "Loading Market Data...";
-            Application.DoEvents();
+            ShowLoading("Fetching Market Data...");
             try
             {
                 cryptoGridView.Rows.Clear();
@@ -313,7 +307,7 @@ namespace InvestAI
             }
             finally
             {
-                loadingPanel.Visible = false;
+                HideLoading();
             }
 }
 
@@ -417,9 +411,7 @@ namespace InvestAI
             if (currentRow == null || currentRow.Tag == null) return;
 
             string symbol = currentRow.Tag.ToString();
-            loadingPanel.Visible = true;
-            loadingPanel.BringToFront();
-            Application.DoEvents();
+            ShowLoading($"Loading {symbol.Remove(symbol.LastIndexOf("USDT"))}...");
             try
             {
 
@@ -529,7 +521,7 @@ namespace InvestAI
             }
             finally
             {
-                loadingPanel.Visible = false;
+                HideLoading();
             }
         }
         
@@ -585,6 +577,66 @@ namespace InvestAI
             base.OnVisibleChanged(e);
             if (this.Visible) timer1.Start();
             else timer1.Stop();
+        }
+        private void InitializeLoadingControl()
+        {
+
+            _loadingPanel = new Panel
+            {
+                Size = new Size(200, 60),
+                BackColor = cardBg, 
+                Visible = false,
+                BorderStyle = BorderStyle.None
+            };
+
+            _loadingPanel.Paint += (s, e) =>
+            {
+                using (Pen p = new Pen(System.Drawing.Color.FromArgb(50, 50, 60), 1))
+                {
+                    e.Graphics.DrawRectangle(p, 0, 0, _loadingPanel.Width - 1, _loadingPanel.Height - 1);
+                }
+            };
+
+
+            _loadingLabel = new System.Windows.Forms.Label
+            {
+                Text = "Loading Data...",
+                ForeColor = textPrimary, 
+                Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold),
+                AutoSize = false,
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+
+            _loadingPanel.Controls.Add(_loadingLabel);
+            this.Controls.Add(_loadingPanel);
+            _loadingPanel.BringToFront(); 
+        }
+
+        private void CenterLoadingPanel()
+        {
+            if (_loadingPanel != null)
+            {
+                _loadingPanel.Location = new Point(
+                    (this.Width - _loadingPanel.Width) / 2,
+                    (this.Height - _loadingPanel.Height) / 2
+                );
+            }
+        }
+
+        private void ShowLoading(string message = "Loading...")
+        {
+            if (_loadingPanel == null) return;
+            _loadingLabel.Text = message;
+            _loadingPanel.Visible = true;
+            _loadingPanel.BringToFront();
+            Application.DoEvents(); 
+        }
+
+        private void HideLoading()
+        {
+            if (_loadingPanel != null)
+                _loadingPanel.Visible = false;
         }
     }
 }

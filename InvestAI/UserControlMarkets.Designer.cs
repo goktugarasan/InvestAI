@@ -45,8 +45,6 @@
             button6 = new Button();
             button7 = new Button();
             splitContainer1 = new SplitContainer();
-            loadingPanel = new Panel();
-            loadingLabel = new Label();
             timer1 = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)cryptoGridView).BeginInit();
             flowLayoutPanel1.SuspendLayout();
@@ -54,7 +52,6 @@
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
-            loadingPanel.SuspendLayout();
             SuspendLayout();
             // 
             // cryptoGridView
@@ -212,35 +209,10 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(flowLayoutPanel1);
-            splitContainer1.Panel2.Controls.Add(loadingPanel);
             splitContainer1.Panel2.Controls.Add(cryptoChart);
             splitContainer1.Size = new Size(1568, 878);
             splitContainer1.SplitterDistance = 522;
             splitContainer1.TabIndex = 7;
-            // 
-            // loadingPanel
-            // 
-            loadingPanel.Anchor = AnchorStyles.None;
-            loadingPanel.BackColor = Color.FromArgb(28, 32, 38);
-            loadingPanel.Controls.Add(loadingLabel);
-            loadingPanel.Location = new Point(140, 378);
-            loadingPanel.Name = "loadingPanel";
-            loadingPanel.Size = new Size(200, 60);
-            loadingPanel.TabIndex = 7;
-            loadingPanel.Visible = false;
-            // 
-            // loadingLabel
-            // 
-            loadingLabel.Anchor = AnchorStyles.Top;
-            loadingLabel.AutoSize = true;
-            loadingLabel.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            loadingLabel.ForeColor = Color.FromArgb(240, 244, 248);
-            loadingLabel.Location = new Point(24, 15);
-            loadingLabel.Name = "loadingLabel";
-            loadingLabel.Size = new Size(153, 28);
-            loadingLabel.TabIndex = 0;
-            loadingLabel.Text = "Loading Data...";
-            loadingLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // UserControlMarkets
             // 
@@ -256,8 +228,6 @@
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
-            loadingPanel.ResumeLayout(false);
-            loadingPanel.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -282,7 +252,5 @@
         private System.Windows.Forms.Timer timer1;
         private Button button6;
         private Button button7;
-        private Label loadingLabel;
-        private Panel loadingPanel;
     }
 }
