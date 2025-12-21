@@ -1,9 +1,12 @@
+using CryptoExchange.Net;
 using ScottPlot;
+using ScottPlot.Plottables;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,11 +17,15 @@ namespace InvestAI
     public partial class UserControlMarkets : UserControl
     {
         public event EventHandler<string> CoinSelected;
-
+        private List<ScottPlot.OHLC> _currentohlcs;
+        private ScottPlot.Plottables.Text _chartdata;
+        private ScottPlot.Plottables.Crosshair _crosshair;
+        private ScottPlot.Plottables.Marker _marker;
         public UserControlMarkets()
         {
             InitializeComponent();
             cryptoGridView.CellClick += cryptoGridView_CellClick;
+            cryptoChart.MouseMove += cryptoChart_MouseMove;
             foreach (Control c in flowLayoutPanel1.Controls)
             {
                 if (c is Button btn)
@@ -100,9 +107,24 @@ namespace InvestAI
             }
         }
 
-        private void stockGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void cryptoChart_MouseMove(object sender, MouseEventArgs e)
         {
+            if (_currentohlcs == null||_currentohlcs.Count==0||_chartdata==null||_crosshair==null||_marker==null) return;
+            Pixel pixel=new(e.X, e.Y);
+            Coordinates coordinates = cryptoChart.Plot.GetCoordinates(pixel);
+            OHLC closest =_currentohlcs.OrderBy(ohlc=>Math.Abs(ScottPlot.NumericConversion.ToNumber(ohlc.DateTime)-coordinates.X)).FirstOrDefault();
+            _chartdata.LabelText =$"DATE:{closest.DateTime:dd-MM-yyyy HH:mm} OPEN:{closest.Open:F2} HIGH:{closest.High:F2} LOW:{closest.Low:F2} CLOSE:{closest.Close:F2}";
+            var limits = cryptoChart.Plot.Axes.GetLimits(cryptoChart.Plot.Axes.Bottom, cryptoChart.Plot.Axes.Right);
+            _chartdata.Location = new Coordinates(limits.Left, limits.Top);
+            if (closest.Close > closest.Open)
+            { _chartdata.LabelFontColor = ScottPlot.Colors.Green; }
+            else if (closest.Close < closest.Open)
+            { _chartdata.LabelFontColor = ScottPlot.Colors.Red; }
+            Coordinates candlecoords = new Coordinates(closest.DateTime.ToOADate(), closest.Close);
+            _crosshair.Position=candlecoords;
+            _marker.Position=candlecoords;
 
+            cryptoChart.Refresh();
         }
 
         private async void cryptoGridView_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -138,7 +160,15 @@ namespace InvestAI
 
             if (ohlcs != null && ohlcs.Any())
             {
+                _currentohlcs = ohlcs;  
                 cryptoChart.Plot.Clear();
+                double firstDate = ohlcs[0].DateTime.ToOADate();
+                double firstPrice =(double)ohlcs[0].Close;
+                _chartdata=cryptoChart.Plot.Add.Text("",firstDate,firstPrice);
+                _chartdata.Axes.YAxis = cryptoChart.Plot.Axes.Right;
+                _chartdata.LabelFontColor = ScottPlot.Colors.Black;
+                _chartdata.LabelFontSize = 20;
+                _chartdata.Alignment = Alignment.UpperLeft;
                 var candles = cryptoChart.Plot.Add.Candlestick(ohlcs);
                 candles.Axes.YAxis = cryptoChart.Plot.Axes.Right;
                 double[] closePrices = ohlcs.Select(x => (double)x.Close).ToArray();
@@ -150,6 +180,18 @@ namespace InvestAI
                 cryptoChart.Plot.Title($"{symbol.Remove(symbol.LastIndexOf("USDT"))} ({duration})");
                 cryptoChart.Plot.Axes.Left.TickLabelStyle.IsVisible = false;
                 cryptoChart.Plot.Axes.Left.FrameLineStyle.IsVisible = false;
+                _crosshair = cryptoChart.Plot.Add.Crosshair(0, 0);
+                _crosshair.Axes.YAxis = cryptoChart.Plot.Axes.Right;
+                _crosshair.LineColor = ScottPlot.Colors.Gray;
+                _crosshair.LineWidth = 1;
+                _crosshair.LinePattern = LinePattern.Dashed;
+                _marker = cryptoChart.Plot.Add.Marker(firstDate, firstPrice);
+                _marker.Axes.YAxis = cryptoChart.Plot.Axes.Right;
+                _marker.MarkerShape = MarkerShape.FilledCircle;
+                _marker.Color = ScottPlot.Colors.Gray;
+                _marker.LineWidth = 1;
+                _marker.MarkerLineColor = ScottPlot.Colors.Gray;
+                _marker.MarkerLineWidth = 8;
                 cryptoChart.Refresh();
             }
 
