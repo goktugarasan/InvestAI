@@ -244,7 +244,7 @@ namespace InvestAI
             plot.Layout.Fixed(new ScottPlot.PixelPadding(
                 left: 75,
                 right: 90,
-                bottom: 130,
+                bottom: 210,
                 top: 65
             ));
         }
