@@ -47,7 +47,16 @@ namespace InvestAI
             ApplyDarkTitleBar();
 
             ApplyModernTheme();
+            isShowingFavorites = true;
+            mainPanel.Controls.Clear();
+            userControlMarkets = new UserControlMarkets();
             userControlMarkets.CoinSelected += OnCoinSelected;
+            userControlMarkets.Dock = DockStyle.Fill;
+            var favorites = favoritesService.GetFavorites();
+            userControlMarkets.LoadFavoriteCoins(favorites);
+            mainPanel.Controls.Add(userControlMarkets);
+            favoriteButton.Visible = false;
+            selectedCoinSymbol = null;
         }
 
         private void ApplyDarkTitleBar()

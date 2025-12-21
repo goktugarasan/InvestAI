@@ -229,6 +229,7 @@ namespace InvestAI
             plot.Axes.Top.FrameLineStyle.IsVisible = false;
 
             // Premium title
+            cryptoChart.Plot.Axes.Title.Label.ForeColor = ScottPlot.Colors.White;
             plot.Title("📊 Select a coin to view chart");
 
             // Glass-like legend
@@ -297,7 +298,7 @@ namespace InvestAI
                 if (price.Count>0)
                 {
                     var csymbol = symbol.Remove(symbol.LastIndexOf("USDT"));
-                    int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"${price[0]:F2}", $"{price[1]:F2}", $"{price[2]}");
+                    int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"${price[0]:F2}", $"{price[1]:F2}", $"{price[2]:N0}");
                     cryptoGridView.Rows[rowIndex].Tag = symbol;
                     if (price[1] < 0)
                     {
@@ -422,13 +423,11 @@ namespace InvestAI
                 cryptoChart.Plot.Axes.DateTimeTicksBottom();
                 cryptoChart.Plot.Axes.AutoScale();
 
-                // Sağdaki Y eksenini görünür ve BÜYÜK yap
                 cryptoChart.Plot.Axes.Right.TickGenerator = new ScottPlot.TickGenerators.NumericAutomatic();
                 cryptoChart.Plot.Axes.Right.TickLabelStyle.FontSize = 12;
                 cryptoChart.Plot.Axes.Right.TickLabelStyle.Bold = true;
                 cryptoChart.Plot.Axes.Right.TickLabelStyle.ForeColor = ScottPlot.Color.FromHex("#F0F4F8");
 
-                // Alt taraftaki tarih fontlarını da büyüt
                 cryptoChart.Plot.Axes.Bottom.TickLabelStyle.FontSize = 11;
                 cryptoChart.Plot.Axes.Bottom.TickLabelStyle.ForeColor = ScottPlot.Color.FromHex("#F0F4F8");
 
@@ -445,9 +444,9 @@ namespace InvestAI
                 _marker = cryptoChart.Plot.Add.Marker(firstDate, firstPrice);
                 _marker.Axes.YAxis = cryptoChart.Plot.Axes.Right;
                 _marker.MarkerShape = MarkerShape.FilledCircle;
-                _marker.Color = ScottPlot.Colors.Gray;
+                _marker.Color = ScottPlot.Colors.White;
                 _marker.LineWidth = 1;
-                _marker.MarkerLineColor = ScottPlot.Colors.Gray;
+                _marker.MarkerLineColor = ScottPlot.Colors.Black;
                 _marker.MarkerLineWidth = 8;
 
                 cryptoChart.Refresh();
