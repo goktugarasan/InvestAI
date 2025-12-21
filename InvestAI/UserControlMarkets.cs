@@ -23,6 +23,7 @@ namespace InvestAI
         private ScottPlot.Plottables.Crosshair _crosshair;
         private ScottPlot.Plottables.Marker _marker;
         private string _activeduration;
+        private string _activecoin;
 
         // Theme colors
         private readonly System.Drawing.Color darkBg = System.Drawing.Color.FromArgb(18, 20, 24);
@@ -313,7 +314,7 @@ namespace InvestAI
                 if (price.Count>0)
                 {
                     var csymbol = symbol.Remove(symbol.LastIndexOf("USDT"));
-                    int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"${price[0]:F2}", $"{price[1]:F2}", $"{price[2]:N0}");
+                    int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"{price[0]:F2}", $"{price[1]:F2}%", $"{price[2]:N0}");
                     cryptoGridView.Rows[rowIndex].Tag = symbol;
                     if (price[1] < 0)
                     {
@@ -321,7 +322,7 @@ namespace InvestAI
                     }
                     else if (price[1] > 0)
                     {
-                        cryptoGridView.Rows[rowIndex].Cells[3].Value = $"+{price[1]}";
+                        cryptoGridView.Rows[rowIndex].Cells[3].Value = $"+{price[1]:F2}%";
                         cryptoGridView.Rows[rowIndex].Cells[3].Style.ForeColor = profitGreen;
                     }
                     rank++;
@@ -397,27 +398,53 @@ namespace InvestAI
 
             string symbol = currentRow.Tag.ToString();
 
-            (Binance.Net.Enums.KlineInterval interval, int limit) = duration switch
+            (Binance.Net.Enums.KlineInterval interval, int limit,int displayCount) = duration switch
             {
-                "1 Day" => (Binance.Net.Enums.KlineInterval.FifteenMinutes, 96),
-                "5 Days" => (Binance.Net.Enums.KlineInterval.OneHour, 120),
-                "1 Month" => (Binance.Net.Enums.KlineInterval.FourHour, 180),
-                "6 Month" => (Binance.Net.Enums.KlineInterval.OneDay, 180),
-                "1 Year" => (Binance.Net.Enums.KlineInterval.OneDay, 365),
-                _ => (Binance.Net.Enums.KlineInterval.FifteenMinutes, 96)
+                "1 Hour" => (Binance.Net.Enums.KlineInterval.OneMinute, 110, 60),
+                "4 Hours" => (Binance.Net.Enums.KlineInterval.FiveMinutes, 100, 48),
+                "1 Day" => (Binance.Net.Enums.KlineInterval.FifteenMinutes, 150, 96),
+                "5 Days" => (Binance.Net.Enums.KlineInterval.OneHour, 200, 120),
+                "1 Month" => (Binance.Net.Enums.KlineInterval.FourHour, 250, 180),
+                "6 Month" => (Binance.Net.Enums.KlineInterval.OneDay, 250, 180),
+                "1 Year" => (Binance.Net.Enums.KlineInterval.OneDay, 415, 365),
+                _ => (Binance.Net.Enums.KlineInterval.FifteenMinutes, 150, 96)
             };
 
             var priceService = new PriceService();
             var ohlcs = await priceService.GetKlinesAsync(symbol, interval, limit);
-
-            if (ohlcs != null && ohlcs.Any())
+            if (ohlcs == null || !ohlcs.Any()) return;
+            for (int i = 0; i < ohlcs.Count; i++)
             {
+                var current = ohlcs[i];
+                ohlcs[i] = new ScottPlot.OHLC(
+                    current.Open,
+                    current.High,
+                    current.Low,
+                    current.Close,
+                    current.DateTime.ToLocalTime(),
+                    current.TimeSpan);
+            }
+            bool isSameCoin = (_activecoin == symbol);
+            bool isSameDuration= (_activeduration == duration);
+            if (_currentohlcs != null && isSameCoin&&isSameDuration)
+            {
+                if (_currentohlcs.Last().DateTime == ohlcs.Last().DateTime)
+                {
+                    return;
+                }
+            }
+                double[] closePrices = ohlcs.Select(x => (double)x.Close).ToArray();
+                double[] allDates = ohlcs.Select(x => x.DateTime.ToOADate()).ToArray();
+                int actualCount=ohlcs.Count();
+                int showCount = Math.Min(actualCount, displayCount);
+                ohlcs =ohlcs.Skip(actualCount-showCount).ToList();
+                _activecoin = symbol;
                 _activeduration = duration;
                 _currentohlcs = ohlcs;
                 cryptoChart.Plot.Clear();
+
                 double firstDate = ohlcs[0].DateTime.ToOADate();
                 double firstPrice = (double)ohlcs[0].Close;
-
                 _chartdata = cryptoChart.Plot.Add.Text("", firstDate, firstPrice);
                 _chartdata.Axes.YAxis = cryptoChart.Plot.Axes.Right;
                 _chartdata.LabelFontColor = ScottPlot.Color.FromHex("#F0F4F8");
@@ -427,17 +454,18 @@ namespace InvestAI
                 _chartdata.LabelBackgroundColor = ScottPlot.Color.FromHex("#1E2228");
                 _chartdata.LabelBorderColor = ScottPlot.Color.FromHex("#2D323A");
                 _chartdata.LabelBorderWidth = 1;
-
+                
                 var candles = cryptoChart.Plot.Add.Candlestick(ohlcs);
                 candles.Axes.YAxis = cryptoChart.Plot.Axes.Right;
-
-                double[] closePrices = ohlcs.Select(x => (double)x.Close).ToArray();
-                double[] allDates = ohlcs.Select(x => x.DateTime.ToOADate()).ToArray();
+                AddMovingAverage(closePrices, allDates, 9, ScottPlot.Colors.Pink);
                 AddMovingAverage(closePrices, allDates, 20, ScottPlot.Colors.Yellow);
                 AddMovingAverage(closePrices, allDates, 50, ScottPlot.Colors.Blue);
 
                 cryptoChart.Plot.Axes.DateTimeTicksBottom();
-                cryptoChart.Plot.Axes.AutoScale();
+                double xMax=allDates.Last();
+                double xMin = allDates[actualCount-showCount];
+                cryptoChart.Plot.Axes.SetLimitsX(xMin,xMax);
+                cryptoChart.Plot.Axes.AutoScaleY(cryptoChart.Plot.Axes.Right);
 
                 cryptoChart.Plot.Axes.Right.TickGenerator = new ScottPlot.TickGenerators.NumericAutomatic();
                 cryptoChart.Plot.Axes.Right.TickLabelStyle.FontSize = 12;
@@ -470,10 +498,11 @@ namespace InvestAI
                 cryptoChart.Plot.Axes.Title.Label.IsVisible = true;
 
                 cryptoChart.Refresh();
-            }
 
-            CoinSelected?.Invoke(this, symbol);
+
+                CoinSelected?.Invoke(this, symbol);
         }
+        
 
         private void AddMovingAverage(double[] closePrices, double[] allDates, int windowSize, ScottPlot.Color color)
         {

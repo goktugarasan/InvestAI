@@ -44,6 +44,8 @@
             button5 = new Button();
             splitContainer1 = new SplitContainer();
             timer1 = new System.Windows.Forms.Timer(components);
+            button6 = new Button();
+            button7 = new Button();
             ((System.ComponentModel.ISupportInitialize)cryptoGridView).BeginInit();
             flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -116,6 +118,8 @@
             flowLayoutPanel1.Controls.Add(button3);
             flowLayoutPanel1.Controls.Add(button4);
             flowLayoutPanel1.Controls.Add(button5);
+            flowLayoutPanel1.Controls.Add(button6);
+            flowLayoutPanel1.Controls.Add(button7);
             flowLayoutPanel1.Dock = DockStyle.Top;
             flowLayoutPanel1.Location = new Point(0, 0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -128,7 +132,7 @@
             button1.Name = "button1";
             button1.Size = new Size(131, 42);
             button1.TabIndex = 0;
-            button1.Text = "1 Day";
+            button1.Text = "1 Hour";
             button1.UseVisualStyleBackColor = true;
             // 
             // button2
@@ -137,7 +141,7 @@
             button2.Name = "button2";
             button2.Size = new Size(131, 42);
             button2.TabIndex = 1;
-            button2.Text = "5 Days";
+            button2.Text = "4 Hours";
             button2.UseVisualStyleBackColor = true;
             // 
             // button3
@@ -146,7 +150,7 @@
             button3.Name = "button3";
             button3.Size = new Size(131, 42);
             button3.TabIndex = 2;
-            button3.Text = "1 Month";
+            button3.Text = "1 Day";
             button3.UseVisualStyleBackColor = true;
             // 
             // button4
@@ -155,7 +159,7 @@
             button4.Name = "button4";
             button4.Size = new Size(131, 42);
             button4.TabIndex = 3;
-            button4.Text = "6 Months";
+            button4.Text = "5 Days";
             button4.UseVisualStyleBackColor = true;
             // 
             // button5
@@ -164,7 +168,7 @@
             button5.Name = "button5";
             button5.Size = new Size(131, 42);
             button5.TabIndex = 4;
-            button5.Text = "1 Year";
+            button5.Text = "1 Month";
             button5.UseVisualStyleBackColor = true;
             // 
             // splitContainer1
@@ -184,6 +188,24 @@
             splitContainer1.Size = new Size(1568, 878);
             splitContainer1.SplitterDistance = 522;
             splitContainer1.TabIndex = 7;
+            // 
+            // button6
+            // 
+            button6.Location = new Point(688, 3);
+            button6.Name = "button6";
+            button6.Size = new Size(131, 42);
+            button6.TabIndex = 5;
+            button6.Text = "6 Months";
+            button6.UseVisualStyleBackColor = true;
+            // 
+            // button7
+            // 
+            button7.Location = new Point(825, 3);
+            button7.Name = "button7";
+            button7.Size = new Size(131, 42);
+            button7.TabIndex = 6;
+            button7.Text = "1 Year";
+            button7.UseVisualStyleBackColor = true;
             // 
             // UserControlMarkets
             // 
@@ -221,5 +243,7 @@
         private Button button5;
         private SplitContainer splitContainer1;
         private System.Windows.Forms.Timer timer1;
+        private Button button6;
+        private Button button7;
     }
 }
