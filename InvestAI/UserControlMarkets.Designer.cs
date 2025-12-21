@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             cryptoGridView = new DataGridView();
             CryptoColumn0 = new DataGridViewTextBoxColumn();
             CryptoColumn1 = new DataGridViewTextBoxColumn();
@@ -42,6 +43,7 @@
             button4 = new Button();
             button5 = new Button();
             splitContainer1 = new SplitContainer();
+            timer1 = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)cryptoGridView).BeginInit();
             flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -218,5 +220,6 @@
         private Button button4;
         private Button button5;
         private SplitContainer splitContainer1;
+        private System.Windows.Forms.Timer timer1;
     }
 }

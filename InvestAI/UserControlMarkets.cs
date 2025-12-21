@@ -4,6 +4,7 @@ using ScottPlot.Plottables;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Text;
@@ -21,6 +22,7 @@ namespace InvestAI
         private ScottPlot.Plottables.Text _chartdata;
         private ScottPlot.Plottables.Crosshair _crosshair;
         private ScottPlot.Plottables.Marker _marker;
+        private string _activeduration;
 
         // Theme colors
         private readonly System.Drawing.Color darkBg = System.Drawing.Color.FromArgb(18, 20, 24);
@@ -54,9 +56,12 @@ namespace InvestAI
             flowLayoutPanel1.AutoScroll = false;
             flowLayoutPanel1.VerticalScroll.Visible = false;
             flowLayoutPanel1.AutoScroll = true;
-
+            timer1.Interval = 10000;
+            timer1.Tick += async (s, e) => await refreshDataAsync();
+            timer1.Start();
             cryptoGridView.CellClick += cryptoGridView_CellClick;
             cryptoChart.MouseMove += cryptoChart_MouseMove;
+            typeof(DataGridView).InvokeMember("DoubleBuffered",System.Reflection.BindingFlags.NonPublic |System.Reflection.BindingFlags.Instance |System.Reflection.BindingFlags.SetProperty,null, cryptoGridView, new object[] { true });
             foreach (Control c in flowLayoutPanel1.Controls)
             {
                 if (c is Button btn)
@@ -312,12 +317,12 @@ namespace InvestAI
                     cryptoGridView.Rows[rowIndex].Tag = symbol;
                     if (price[1] < 0)
                     {
-                        cryptoGridView.Rows[rowIndex].Cells[3].Style.ForeColor = System.Drawing.Color.Red;
+                        cryptoGridView.Rows[rowIndex].Cells[3].Style.ForeColor = lossRed;
                     }
                     else if (price[1] > 0)
                     {
                         cryptoGridView.Rows[rowIndex].Cells[3].Value = $"+{price[1]}";
-                        cryptoGridView.Rows[rowIndex].Cells[3].Style.ForeColor = System.Drawing.Color.Green;
+                        cryptoGridView.Rows[rowIndex].Cells[3].Style.ForeColor = profitGreen;
                     }
                     rank++;
                 }
@@ -350,7 +355,7 @@ namespace InvestAI
             Coordinates coordinates = cryptoChart.Plot.GetCoordinates(pixel);
             OHLC closest = _currentohlcs.OrderBy(ohlc => Math.Abs(ScottPlot.NumericConversion.ToNumber(ohlc.DateTime) - coordinates.X)).FirstOrDefault();
 
-            _chartdata.LabelText = $"DATE:{closest.DateTime:dd-MM-yyyy HH:mm} OPEN:{closest.Open:F2} HIGH:{closest.High:F2} LOW:{closest.Low:F2} CLOSE:{closest.Close:F2}";
+            _chartdata.LabelText = $"DATE:{closest.DateTime:dd-MM-yyyy HH:mm}\n" + $"OPEN:{closest.Open:F2} HIGH:{closest.High:F2} LOW:{closest.Low:F2} CLOSE:{closest.Close:F2}";
             var limits = cryptoChart.Plot.Axes.GetLimits(cryptoChart.Plot.Axes.Bottom, cryptoChart.Plot.Axes.Right);
             _chartdata.Location = new Coordinates(limits.Left, limits.Top);
 
@@ -407,6 +412,7 @@ namespace InvestAI
 
             if (ohlcs != null && ohlcs.Any())
             {
+                _activeduration = duration;
                 _currentohlcs = ohlcs;
                 cryptoChart.Plot.Clear();
                 double firstDate = ohlcs[0].DateTime.ToOADate();
@@ -479,6 +485,44 @@ namespace InvestAI
             sp.MarkerSize = 0;
             sp.LegendText = $"MA{windowSize}";
             sp.Axes.YAxis = cryptoChart.Plot.Axes.Right;
+        }
+        private async Task refreshDataAsync()
+        {
+            var priceService = new PriceService();
+            var topCoins = await priceService.GetTop50CoinsAsync();
+
+            foreach (var coin in topCoins)
+            {
+                foreach (DataGridViewRow row in cryptoGridView.Rows)
+                {
+                    if (row.Tag?.ToString() == coin.Symbol)
+                    {
+                        row.Cells[2].Value = $"${coin.Price:N2}";
+                        row.Cells[3].Value = $"{coin.Change:F2}%";
+                        row.Cells[4].Value = $"{coin.Volume:N0}";
+                        if(coin.Change > 0)
+                        {
+                            row.Cells[3].Style.ForeColor=profitGreen;
+                            row.Cells[3].Value = $"+{row.Cells[3].Value}";
+                        }
+                        else if(coin.Change < 0)
+                        {
+                            row.Cells[3].Style.ForeColor=lossRed;
+                        }
+                        break;
+                    }
+                }
+            }
+            if (cryptoGridView.CurrentRow != null)
+            {
+                await HandleCoinSelection(_activeduration??"1 Day");
+            }
+        }
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            if (this.Visible) timer1.Start();
+            else timer1.Stop();
         }
     }
 }
