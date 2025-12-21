@@ -42,16 +42,19 @@
             button3 = new Button();
             button4 = new Button();
             button5 = new Button();
-            splitContainer1 = new SplitContainer();
-            timer1 = new System.Windows.Forms.Timer(components);
             button6 = new Button();
             button7 = new Button();
+            splitContainer1 = new SplitContainer();
+            loadingPanel = new Panel();
+            loadingLabel = new Label();
+            timer1 = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)cryptoGridView).BeginInit();
             flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
+            loadingPanel.SuspendLayout();
             SuspendLayout();
             // 
             // cryptoGridView
@@ -128,6 +131,7 @@
             // 
             // button1
             // 
+            button1.Font = new Font("Segoe UI", 8F);
             button1.Location = new Point(3, 3);
             button1.Name = "button1";
             button1.Size = new Size(131, 42);
@@ -137,6 +141,7 @@
             // 
             // button2
             // 
+            button2.Font = new Font("Segoe UI", 8F);
             button2.Location = new Point(140, 3);
             button2.Name = "button2";
             button2.Size = new Size(131, 42);
@@ -146,6 +151,7 @@
             // 
             // button3
             // 
+            button3.Font = new Font("Segoe UI", 8F);
             button3.Location = new Point(277, 3);
             button3.Name = "button3";
             button3.Size = new Size(131, 42);
@@ -155,6 +161,7 @@
             // 
             // button4
             // 
+            button4.Font = new Font("Segoe UI", 8F);
             button4.Location = new Point(414, 3);
             button4.Name = "button4";
             button4.Size = new Size(131, 42);
@@ -164,12 +171,33 @@
             // 
             // button5
             // 
+            button5.Font = new Font("Segoe UI", 8F);
             button5.Location = new Point(551, 3);
             button5.Name = "button5";
             button5.Size = new Size(131, 42);
             button5.TabIndex = 4;
             button5.Text = "1 Month";
             button5.UseVisualStyleBackColor = true;
+            // 
+            // button6
+            // 
+            button6.Font = new Font("Segoe UI", 8F);
+            button6.Location = new Point(688, 3);
+            button6.Name = "button6";
+            button6.Size = new Size(131, 42);
+            button6.TabIndex = 5;
+            button6.Text = "6 Months";
+            button6.UseVisualStyleBackColor = true;
+            // 
+            // button7
+            // 
+            button7.Font = new Font("Segoe UI", 8F);
+            button7.Location = new Point(825, 3);
+            button7.Name = "button7";
+            button7.Size = new Size(131, 42);
+            button7.TabIndex = 6;
+            button7.Text = "1 Year";
+            button7.UseVisualStyleBackColor = true;
             // 
             // splitContainer1
             // 
@@ -184,28 +212,35 @@
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(flowLayoutPanel1);
+            splitContainer1.Panel2.Controls.Add(loadingPanel);
             splitContainer1.Panel2.Controls.Add(cryptoChart);
             splitContainer1.Size = new Size(1568, 878);
             splitContainer1.SplitterDistance = 522;
             splitContainer1.TabIndex = 7;
             // 
-            // button6
+            // loadingPanel
             // 
-            button6.Location = new Point(688, 3);
-            button6.Name = "button6";
-            button6.Size = new Size(131, 42);
-            button6.TabIndex = 5;
-            button6.Text = "6 Months";
-            button6.UseVisualStyleBackColor = true;
+            loadingPanel.Anchor = AnchorStyles.None;
+            loadingPanel.BackColor = Color.FromArgb(28, 32, 38);
+            loadingPanel.Controls.Add(loadingLabel);
+            loadingPanel.Location = new Point(140, 378);
+            loadingPanel.Name = "loadingPanel";
+            loadingPanel.Size = new Size(200, 60);
+            loadingPanel.TabIndex = 7;
+            loadingPanel.Visible = false;
             // 
-            // button7
+            // loadingLabel
             // 
-            button7.Location = new Point(825, 3);
-            button7.Name = "button7";
-            button7.Size = new Size(131, 42);
-            button7.TabIndex = 6;
-            button7.Text = "1 Year";
-            button7.UseVisualStyleBackColor = true;
+            loadingLabel.Anchor = AnchorStyles.Top;
+            loadingLabel.AutoSize = true;
+            loadingLabel.Font = new Font("Segoe UI", 10F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            loadingLabel.ForeColor = Color.FromArgb(240, 244, 248);
+            loadingLabel.Location = new Point(24, 15);
+            loadingLabel.Name = "loadingLabel";
+            loadingLabel.Size = new Size(153, 28);
+            loadingLabel.TabIndex = 0;
+            loadingLabel.Text = "Loading Data...";
+            loadingLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // UserControlMarkets
             // 
@@ -221,6 +256,8 @@
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
+            loadingPanel.ResumeLayout(false);
+            loadingPanel.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -245,5 +282,7 @@
         private System.Windows.Forms.Timer timer1;
         private Button button6;
         private Button button7;
+        private Label loadingLabel;
+        private Panel loadingPanel;
     }
 }

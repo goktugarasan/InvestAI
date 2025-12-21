@@ -47,6 +47,13 @@ namespace InvestAI
 
             // Apply modern theme
             ApplyModernTheme();
+            loadingPanel.Paint += (s, e) =>
+            {
+                using (Pen p = new Pen(System.Drawing.Color.FromArgb(60, 65, 75), 1))
+                {
+                    e.Graphics.DrawRectangle(p, 0, 0, loadingPanel.Width - 1, loadingPanel.Height - 1);
+                }
+            };
             flowLayoutPanel1.AutoSize = false;
             flowLayoutPanel1.Height = 70;
             flowLayoutPanel1.MaximumSize = new Size(0, 70);
@@ -81,8 +88,9 @@ namespace InvestAI
             // Duration buttons panel - DÜZELTİLDİ
             flowLayoutPanel1.BackColor = cardBg;
             flowLayoutPanel1.Padding = new Padding(8, 6, 8, 6);
-            flowLayoutPanel1.AutoSize = true; // AutoSize true yapıldı
-            flowLayoutPanel1.WrapContents = true;
+            flowLayoutPanel1.AutoSize = false;
+            flowLayoutPanel1.WrapContents = false;
+            flowLayoutPanel1.Height = 70;
             flowLayoutPanel1.MinimumSize = new System.Drawing.Size(0, 40); // Minimum yükseklik
 
             foreach (Control c in flowLayoutPanel1.Controls)
@@ -99,6 +107,8 @@ namespace InvestAI
 
         private void StyleDurationButton(Button btn)
         {
+            btn.AutoSize = false;
+            btn.Size = new Size(131, 42);
             btn.FlatStyle = FlatStyle.Flat;
             btn.BackColor = System.Drawing.Color.FromArgb(35, 40, 48);
             btn.ForeColor = System.Drawing.Color.FromArgb(140, 150, 165);
@@ -106,7 +116,7 @@ namespace InvestAI
             btn.FlatAppearance.BorderSize = 0;
             btn.Cursor = Cursors.Hand;
             btn.Padding = new Padding(10, 5, 10, 5);
-            btn.AutoSize = true; // AutoSize true
+            
             btn.MinimumSize = new System.Drawing.Size(70, 28); // Minimum boyut
             btn.Margin = new Padding(3, 2, 3, 2); // Margin eklendi
 
@@ -267,35 +277,45 @@ namespace InvestAI
 
         public async void LoadAllCoins()
         {
-            cryptoGridView.Rows.Clear();
-
-            var priceService = new PriceService();
-            var topCoins = await priceService.GetTop50CoinsAsync();
-            int rank = 1;
-            foreach (var coin in topCoins)
+            loadingPanel.Visible = true;
+            loadingPanel.BringToFront();
+            loadingLabel.Text = "Loading Market Data...";
+            Application.DoEvents();
+            try
             {
-                var csymbol = coin.Symbol.Remove(coin.Symbol.LastIndexOf("USDT"));
-
-                string change = $"{coin.Change:F2}%";
-                int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"${coin.Price:N2}", change, $"{coin.Volume:N0}");
-
-                cryptoGridView.Rows[rowIndex].Tag = coin.Symbol;
-
-                if (coin.Change < 0)
+                cryptoGridView.Rows.Clear();
+                var priceService = new PriceService();
+                var topCoins = await priceService.GetTop50CoinsAsync();
+                int rank = 1;
+                foreach (var coin in topCoins)
                 {
-                    cryptoGridView.Rows[rowIndex].Cells[3].Style.ForeColor = lossRed;
-                    cryptoGridView.Rows[rowIndex].Cells[3].Style.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-                }
-                else if (coin.Change > 0)
-                {
-                    cryptoGridView.Rows[rowIndex].Cells[3].Value = $"+{change}";
-                    cryptoGridView.Rows[rowIndex].Cells[3].Style.ForeColor = profitGreen;
-                    cryptoGridView.Rows[rowIndex].Cells[3].Style.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-                }
+                    var csymbol = coin.Symbol.Remove(coin.Symbol.LastIndexOf("USDT"));
 
-                rank++;
+                    string change = $"{coin.Change:F2}%";
+                    int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"${coin.Price:N2}", change, $"{coin.Volume:N0}");
+
+                    cryptoGridView.Rows[rowIndex].Tag = coin.Symbol;
+
+                    if (coin.Change < 0)
+                    {
+                        cryptoGridView.Rows[rowIndex].Cells[3].Style.ForeColor = lossRed;
+                        cryptoGridView.Rows[rowIndex].Cells[3].Style.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+                    }
+                    else if (coin.Change > 0)
+                    {
+                        cryptoGridView.Rows[rowIndex].Cells[3].Value = $"+{change}";
+                        cryptoGridView.Rows[rowIndex].Cells[3].Style.ForeColor = profitGreen;
+                        cryptoGridView.Rows[rowIndex].Cells[3].Style.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
+                    }
+
+                    rank++;
+                }
             }
-        }
+            finally
+            {
+                loadingPanel.Visible = false;
+            }
+}
 
         public async void LoadFavoriteCoins(List<string> favoriteSymbols)
         {
@@ -397,47 +417,52 @@ namespace InvestAI
             if (currentRow == null || currentRow.Tag == null) return;
 
             string symbol = currentRow.Tag.ToString();
+            loadingPanel.Visible = true;
+            loadingPanel.BringToFront();
+            Application.DoEvents();
+            try
+            {
 
-            (Binance.Net.Enums.KlineInterval interval, int limit,int displayCount) = duration switch
-            {
-                "1 Hour" => (Binance.Net.Enums.KlineInterval.OneMinute, 110, 60),
-                "4 Hours" => (Binance.Net.Enums.KlineInterval.FiveMinutes, 100, 48),
-                "1 Day" => (Binance.Net.Enums.KlineInterval.FifteenMinutes, 150, 96),
-                "5 Days" => (Binance.Net.Enums.KlineInterval.OneHour, 200, 120),
-                "1 Month" => (Binance.Net.Enums.KlineInterval.FourHour, 250, 180),
-                "6 Month" => (Binance.Net.Enums.KlineInterval.OneDay, 250, 180),
-                "1 Year" => (Binance.Net.Enums.KlineInterval.OneDay, 415, 365),
-                _ => (Binance.Net.Enums.KlineInterval.FifteenMinutes, 150, 96)
-            };
-
-            var priceService = new PriceService();
-            var ohlcs = await priceService.GetKlinesAsync(symbol, interval, limit);
-            if (ohlcs == null || !ohlcs.Any()) return;
-            for (int i = 0; i < ohlcs.Count; i++)
-            {
-                var current = ohlcs[i];
-                ohlcs[i] = new ScottPlot.OHLC(
-                    current.Open,
-                    current.High,
-                    current.Low,
-                    current.Close,
-                    current.DateTime.ToLocalTime(),
-                    current.TimeSpan);
-            }
-            bool isSameCoin = (_activecoin == symbol);
-            bool isSameDuration= (_activeduration == duration);
-            if (_currentohlcs != null && isSameCoin&&isSameDuration)
-            {
-                if (_currentohlcs.Last().DateTime == ohlcs.Last().DateTime)
+                (Binance.Net.Enums.KlineInterval interval, int limit, int displayCount) = duration switch
                 {
-                    return;
+                    "1 Hour" => (Binance.Net.Enums.KlineInterval.OneMinute, 110, 60),
+                    "4 Hours" => (Binance.Net.Enums.KlineInterval.FiveMinutes, 100, 48),
+                    "1 Day" => (Binance.Net.Enums.KlineInterval.FifteenMinutes, 150, 96),
+                    "5 Days" => (Binance.Net.Enums.KlineInterval.OneHour, 200, 120),
+                    "1 Month" => (Binance.Net.Enums.KlineInterval.FourHour, 250, 180),
+                    "6 Month" => (Binance.Net.Enums.KlineInterval.OneDay, 250, 180),
+                    "1 Year" => (Binance.Net.Enums.KlineInterval.OneDay, 415, 365),
+                    _ => (Binance.Net.Enums.KlineInterval.FifteenMinutes, 150, 96)
+                };
+
+                var priceService = new PriceService();
+                var ohlcs = await priceService.GetKlinesAsync(symbol, interval, limit);
+                if (ohlcs == null || !ohlcs.Any()) return;
+                for (int i = 0; i < ohlcs.Count; i++)
+                {
+                    var current = ohlcs[i];
+                    ohlcs[i] = new ScottPlot.OHLC(
+                        current.Open,
+                        current.High,
+                        current.Low,
+                        current.Close,
+                        current.DateTime.ToLocalTime(),
+                        current.TimeSpan);
                 }
-            }
+                bool isSameCoin = (_activecoin == symbol);
+                bool isSameDuration = (_activeduration == duration);
+                if (_currentohlcs != null && isSameCoin && isSameDuration)
+                {
+                    if (_currentohlcs.Last().DateTime == ohlcs.Last().DateTime)
+                    {
+                        return;
+                    }
+                }
                 double[] closePrices = ohlcs.Select(x => (double)x.Close).ToArray();
                 double[] allDates = ohlcs.Select(x => x.DateTime.ToOADate()).ToArray();
-                int actualCount=ohlcs.Count();
+                int actualCount = ohlcs.Count();
                 int showCount = Math.Min(actualCount, displayCount);
-                ohlcs =ohlcs.Skip(actualCount-showCount).ToList();
+                ohlcs = ohlcs.Skip(actualCount - showCount).ToList();
                 _activecoin = symbol;
                 _activeduration = duration;
                 _currentohlcs = ohlcs;
@@ -454,7 +479,7 @@ namespace InvestAI
                 _chartdata.LabelBackgroundColor = ScottPlot.Color.FromHex("#1E2228");
                 _chartdata.LabelBorderColor = ScottPlot.Color.FromHex("#2D323A");
                 _chartdata.LabelBorderWidth = 1;
-                
+
                 var candles = cryptoChart.Plot.Add.Candlestick(ohlcs);
                 candles.Axes.YAxis = cryptoChart.Plot.Axes.Right;
                 AddMovingAverage(closePrices, allDates, 9, ScottPlot.Colors.Pink);
@@ -462,9 +487,9 @@ namespace InvestAI
                 AddMovingAverage(closePrices, allDates, 50, ScottPlot.Colors.Blue);
 
                 cryptoChart.Plot.Axes.DateTimeTicksBottom();
-                double xMax=allDates.Last();
-                double xMin = allDates[actualCount-showCount];
-                cryptoChart.Plot.Axes.SetLimitsX(xMin,xMax);
+                double xMax = allDates.Last();
+                double xMin = allDates[actualCount - showCount];
+                cryptoChart.Plot.Axes.SetLimitsX(xMin, xMax);
                 cryptoChart.Plot.Axes.AutoScaleY(cryptoChart.Plot.Axes.Right);
 
                 cryptoChart.Plot.Axes.Right.TickGenerator = new ScottPlot.TickGenerators.NumericAutomatic();
@@ -501,6 +526,11 @@ namespace InvestAI
 
 
                 CoinSelected?.Invoke(this, symbol);
+            }
+            finally
+            {
+                loadingPanel.Visible = false;
+            }
         }
         
 
@@ -517,8 +547,11 @@ namespace InvestAI
         }
         private async Task refreshDataAsync()
         {
+            if (this.IsDisposed || !this.Visible || cryptoGridView.Columns.Count == 0) return;
             var priceService = new PriceService();
             var topCoins = await priceService.GetTop50CoinsAsync();
+
+            if (this.IsDisposed || !this.Visible || cryptoGridView.Columns.Count == 0) return;
 
             foreach (var coin in topCoins)
             {
