@@ -297,11 +297,7 @@ namespace InvestAI
                 if (price.Count>0)
                 {
                     var csymbol = symbol.Remove(symbol.LastIndexOf("USDT"));
-<<<<<<< HEAD
-                    int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"${price.Value:N2}", "-", "-");
-=======
-                    int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"${price[0]}", $"{price[1]}", $"{price[2]}");
->>>>>>> 128eac1d7d0ddbfa3afa67ddb9bbf5a4ad55477b
+                    int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"${price[0]:F2}", $"{price[1]:F2}", $"{price[2]}");
                     cryptoGridView.Rows[rowIndex].Tag = symbol;
                     if (price[1] < 0)
                     {
