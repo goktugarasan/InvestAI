@@ -44,6 +44,16 @@ namespace InvestAI
 
             // Apply modern theme
             ApplyModernTheme();
+            flowLayoutPanel1.AutoSize = false;
+            flowLayoutPanel1.Height = 70;
+            flowLayoutPanel1.MaximumSize = new Size(0, 70);
+            flowLayoutPanel1.MinimumSize = new Size(0, 70);
+            flowLayoutPanel1.FlowDirection = FlowDirection.LeftToRight;
+            flowLayoutPanel1.WrapContents = false;
+            flowLayoutPanel1.VerticalScroll.Maximum = 0;
+            flowLayoutPanel1.AutoScroll = false;
+            flowLayoutPanel1.VerticalScroll.Visible = false;
+            flowLayoutPanel1.AutoScroll = true;
 
             cryptoGridView.CellClick += cryptoGridView_CellClick;
             cryptoChart.MouseMove += cryptoChart_MouseMove;
@@ -59,8 +69,8 @@ namespace InvestAI
         private void ApplyModernTheme()
         {
             this.BackColor = darkBg;
-            panel1.BackColor = darkBg;
-            panel2.BackColor = darkBg;
+            splitContainer1.Panel1.BackColor = darkBg;
+            splitContainer1.Panel2.BackColor = darkBg;
 
             // Duration buttons panel - DÜZELTİLDİ
             flowLayoutPanel1.BackColor = cardBg;
@@ -245,7 +255,7 @@ namespace InvestAI
                 left: 75,
                 right: 90,
                 bottom: 210,
-                top: 65
+                top: 120
             ));
         }
 
@@ -431,7 +441,6 @@ namespace InvestAI
                 cryptoChart.Plot.Axes.Bottom.TickLabelStyle.FontSize = 11;
                 cryptoChart.Plot.Axes.Bottom.TickLabelStyle.ForeColor = ScottPlot.Color.FromHex("#F0F4F8");
 
-                cryptoChart.Plot.Title($"{symbol.Remove(symbol.LastIndexOf("USDT"))} ({duration})");
                 cryptoChart.Plot.Axes.Left.TickLabelStyle.IsVisible = false;
                 cryptoChart.Plot.Axes.Left.FrameLineStyle.IsVisible = false;
 
@@ -448,6 +457,11 @@ namespace InvestAI
                 _marker.LineWidth = 1;
                 _marker.MarkerLineColor = ScottPlot.Colors.Black;
                 _marker.MarkerLineWidth = 8;
+
+                cryptoChart.Plot.Title($"{symbol.Remove(symbol.LastIndexOf("USDT"))} ({duration})");
+                cryptoChart.Plot.Axes.Title.Label.ForeColor = ScottPlot.Colors.White;
+                cryptoChart.Plot.Axes.Title.Label.FontSize = 18;
+                cryptoChart.Plot.Axes.Title.Label.IsVisible = true;
 
                 cryptoChart.Refresh();
             }

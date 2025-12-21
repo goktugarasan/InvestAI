@@ -34,8 +34,6 @@
             CryptoColumn2 = new DataGridViewTextBoxColumn();
             CryptoColumn3 = new DataGridViewTextBoxColumn();
             CryptoColumn4 = new DataGridViewTextBoxColumn();
-            panel1 = new Panel();
-            panel2 = new Panel();
             cryptoChart = new ScottPlot.WinForms.FormsPlot();
             flowLayoutPanel1 = new FlowLayoutPanel();
             button1 = new Button();
@@ -43,10 +41,13 @@
             button3 = new Button();
             button4 = new Button();
             button5 = new Button();
+            splitContainer1 = new SplitContainer();
             ((System.ComponentModel.ISupportInitialize)cryptoGridView).BeginInit();
-            panel1.SuspendLayout();
-            panel2.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
             SuspendLayout();
             // 
             // cryptoGridView
@@ -58,7 +59,7 @@
             cryptoGridView.Margin = new Padding(2);
             cryptoGridView.Name = "cryptoGridView";
             cryptoGridView.RowHeadersWidth = 62;
-            cryptoGridView.Size = new Size(788, 878);
+            cryptoGridView.Size = new Size(522, 878);
             cryptoGridView.TabIndex = 0;
             cryptoGridView.CellContentClick += cryptoGridView_CellContentClick;
             // 
@@ -97,34 +98,13 @@
             CryptoColumn4.MinimumWidth = 8;
             CryptoColumn4.Name = "CryptoColumn4";
             // 
-            // panel1
-            // 
-            panel1.Controls.Add(cryptoGridView);
-            panel1.Dock = DockStyle.Left;
-            panel1.Location = new Point(0, 0);
-            panel1.Margin = new Padding(2);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(788, 878);
-            panel1.TabIndex = 5;
-            // 
-            // panel2
-            // 
-            panel2.Controls.Add(cryptoChart);
-            panel2.Controls.Add(flowLayoutPanel1);
-            panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(788, 0);
-            panel2.Margin = new Padding(2);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(780, 878);
-            panel2.TabIndex = 6;
-            // 
             // cryptoChart
             // 
             cryptoChart.DisplayScale = 1.5F;
             cryptoChart.Dock = DockStyle.Fill;
-            cryptoChart.Location = new Point(0, 63);
+            cryptoChart.Location = new Point(0, 0);
             cryptoChart.Name = "cryptoChart";
-            cryptoChart.Size = new Size(780, 815);
+            cryptoChart.Size = new Size(1042, 878);
             cryptoChart.TabIndex = 1;
             // 
             // flowLayoutPanel1
@@ -137,7 +117,7 @@
             flowLayoutPanel1.Dock = DockStyle.Top;
             flowLayoutPanel1.Location = new Point(0, 0);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(780, 63);
+            flowLayoutPanel1.Size = new Size(1042, 63);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // button1
@@ -185,19 +165,38 @@
             button5.Text = "1 Year";
             button5.UseVisualStyleBackColor = true;
             // 
+            // splitContainer1
+            // 
+            splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.Location = new Point(0, 0);
+            splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            splitContainer1.Panel1.Controls.Add(cryptoGridView);
+            // 
+            // splitContainer1.Panel2
+            // 
+            splitContainer1.Panel2.Controls.Add(flowLayoutPanel1);
+            splitContainer1.Panel2.Controls.Add(cryptoChart);
+            splitContainer1.Size = new Size(1568, 878);
+            splitContainer1.SplitterDistance = 522;
+            splitContainer1.TabIndex = 7;
+            // 
             // UserControlMarkets
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(panel2);
-            Controls.Add(panel1);
+            Controls.Add(splitContainer1);
             Margin = new Padding(2);
             Name = "UserControlMarkets";
             Size = new Size(1568, 878);
             ((System.ComponentModel.ISupportInitialize)cryptoGridView).EndInit();
-            panel1.ResumeLayout(false);
-            panel2.ResumeLayout(false);
             flowLayoutPanel1.ResumeLayout(false);
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -206,8 +205,6 @@
         private DataGridView cryptoGridView;
         private Label cryptoLabel;
         private Label stockLabel;
-        private Panel panel1;
-        private Panel panel2;
         private DataGridViewTextBoxColumn CryptoColumn0;
         private DataGridViewTextBoxColumn CryptoColumn1;
         private DataGridViewTextBoxColumn CryptoColumn2;
@@ -220,5 +217,6 @@
         private Button button3;
         private Button button4;
         private Button button5;
+        private SplitContainer splitContainer1;
     }
 }
