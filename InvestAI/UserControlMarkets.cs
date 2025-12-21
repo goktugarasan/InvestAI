@@ -79,11 +79,20 @@ namespace InvestAI
             foreach (var symbol in favoriteSymbols)
             {
                 var price = await priceService.GetCurrentPriceAsync(symbol);
-                if (price.HasValue)
+                if (price.Count>0)
                 {
                     var csymbol = symbol.Remove(symbol.LastIndexOf("USDT"));
-                    int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"${price.Value}", "{change}", "-");
+                    int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"${price[0]}", $"{price[1]}", $"{price[2]}");
                     cryptoGridView.Rows[rowIndex].Tag = symbol;
+                    if (price[1] < 0)
+                    {
+                        cryptoGridView.Rows[rowIndex].Cells[3].Style.ForeColor = System.Drawing.Color.Red;
+                    }
+                    else if (price[1] > 0)
+                    {
+                        cryptoGridView.Rows[rowIndex].Cells[3].Value = $"+{price[1]}";
+                        cryptoGridView.Rows[rowIndex].Cells[3].Style.ForeColor = System.Drawing.Color.Green;
+                    }
                     rank++;
                 }
             }

@@ -22,7 +22,7 @@ namespace InvestAI
         }
 
         // get current price for a symbol
-        public async Task<decimal?> GetCurrentPriceAsync(string symbol)
+        public async Task<List<decimal>> GetCurrentPriceAsync(string symbol)
         {
             var result = await _client.SpotApi.ExchangeData.GetTickerAsync(symbol);
             if (!result.Success)
@@ -31,7 +31,12 @@ namespace InvestAI
                 return null;
             }
 
-            return result.Data.LastPrice;
+            return new List<decimal>
+            {
+                result.Data.LastPrice,
+                result.Data.PriceChangePercent,
+                result.Data.QuoteVolume
+            };
         }
 
         //get top 50 most popular coins in the last 24h
