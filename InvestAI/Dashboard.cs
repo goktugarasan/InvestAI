@@ -14,6 +14,9 @@ namespace InvestAI
     {
         UserControlMarkets userControlMarkets = new UserControlMarkets();
         private JsonFavoritesService favoritesService = new JsonFavoritesService();
+        private JsonNotifsService _notifsService;
+        private PriceService _priceService;
+        private System.Windows.Forms.Timer _notificationCheckTimer;
         private string selectedCoinSymbol;
         private bool isShowingFavorites = false;
 
@@ -45,6 +48,16 @@ namespace InvestAI
 
             // Dark title bar (Windows 10/11)
             ApplyDarkTitleBar();
+
+            // Initialize notification services
+            _notifsService = new JsonNotifsService();
+            _priceService = new PriceService();
+
+            // Start notification checking timer
+            _notificationCheckTimer = new System.Windows.Forms.Timer();
+            _notificationCheckTimer.Interval = 30000; // 30 seconds
+            _notificationCheckTimer.Tick += async (s, e) => await CheckPriceAlertsAsync();
+            _notificationCheckTimer.Start();
 
             ApplyModernTheme();
             isShowingFavorites = true;
@@ -138,6 +151,7 @@ namespace InvestAI
             // Navigation Buttons - Premium cards
             StyleNavButton(homeButton, "🏠 ");
             StyleNavButton(marketsButton, "📊 ");
+            StyleNavButton(notificationsButton, "🔔 ");
 
             // Resize handler
             this.Resize += (s, e) =>
@@ -160,9 +174,11 @@ namespace InvestAI
             btn.TextAlign = ContentAlignment.MiddleLeft;
             btn.Padding = new Padding(15, 10, 15, 10);
 
+            /*
             string originalText = btn.Text.Replace("🏠", "").Replace("📊", "").Trim();
             btn.Text = $"{icon}{originalText}";
-
+            */
+            btn.Text = $"{icon}\n{btn.Text.Trim()}";
             MakeRounded(btn, 10);
 
             // Premium hover with smooth transition
@@ -204,6 +220,27 @@ namespace InvestAI
             {
                 btn.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, btn.Width, btn.Height, radius, radius));
             };
+        }
+
+        private void notificationsButton_Click(object sender, EventArgs e)
+        {
+            isShowingFavorites = false;
+            mainPanel.Controls.Clear();
+            var notificationsControl = new Notifications();
+            notificationsControl.Dock = DockStyle.Fill;
+            mainPanel.Controls.Add(notificationsControl);
+            favoriteButton.Visible = false;
+            selectedCoinSymbol = null;
+
+            // Update button states
+            foreach (Control c in flowLayoutPanel1.Controls)
+            {
+                if (c is Button navBtn)
+                {
+                    navBtn.BackColor = Color.Transparent;
+                    navBtn.ForeColor = Color.FromArgb(140, 150, 165);
+                }
+            }
         }
 
         private void marketsButton_Click(object sender, EventArgs e)
@@ -274,7 +311,81 @@ namespace InvestAI
                 favoriteButton.BackColor = accentRed;
             }
         }
-        
+
+        private void mainPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private async Task CheckPriceAlertsAsync()
+        {
+            var notifications = _notifsService.GetNotifications();
+            var triggeredNotifications = new List<Notification>();
+
+            foreach (var notif in notifications)
+            {
+                try
+                {
+                    var priceData = await _priceService.GetCurrentPriceAsync(notif.symbol);
+                    if (priceData != null && priceData.Count > 0)
+                    {
+                        decimal currentPrice = priceData[0];
+
+                        if (notif.isAbove && currentPrice >= notif.targetPrice)
+                        {
+                            triggeredNotifications.Add(notif);
+                            ShowPriceAlert(notif, currentPrice);
+                        }
+                        else if (!notif.isAbove && currentPrice <= notif.targetPrice)
+                        {
+                            triggeredNotifications.Add(notif);
+                            ShowPriceAlert(notif, currentPrice);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error checking price for {notif.symbol}: {ex.Message}");
+                }
+            }
+
+            // Remove triggered notifications
+            foreach (var notif in triggeredNotifications)
+            {
+                _notifsService.RemoveNotif(notif);
+            }
+        }
+
+        private void ShowPriceAlert(Notification notif, decimal currentPrice)
+        {
+            string symbol = notif.symbol.Replace("USDT", "");
+            string condition = notif.isAbove ? "above" : "below";
+            string message = $"🔔 Price Alert!\n\n{symbol} has gone {condition} ${notif.targetPrice:F2}\n\nCurrent Price: ${currentPrice:F2}";
+
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(() =>
+                {
+                    MessageBox.Show(message, "Price Alert Triggered", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }));
+            }
+            else
+            {
+                MessageBox.Show(message, "Price Alert Triggered", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            _notificationCheckTimer?.Stop();
+            _notificationCheckTimer?.Dispose();
+        }
     }
 }
 

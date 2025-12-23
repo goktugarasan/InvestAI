@@ -117,4 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="instructionLabel.Text" xml:space="preserve">
+    <value>How to use notifications:
+
+1. Select a coin from your favorites on the left
+2. Choose whether to be notified when price goes above or below
+3. Enter your target price
+4. Click Confirm
+
+Active notifications will appear in the grid on the left.
+Click "Remove" to delete a notification.</value>
+  </data>
 </root>
