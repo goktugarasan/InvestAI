@@ -325,7 +325,7 @@ namespace InvestAI
             foreach (var symbol in favoriteSymbols)
             {
                 var price = await priceService.GetCurrentPriceAsync(symbol);
-                if (price.Count>0)
+                if (price?.Count>0)
                 {
                     var csymbol = symbol.Remove(symbol.LastIndexOf("USDT"));
                     int rowIndex = cryptoGridView.Rows.Add(rank, $"{csymbol}", $"{price[0]:F2}", $"{price[1]:F2}%", $"{price[2]:N0}");

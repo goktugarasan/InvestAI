@@ -17,6 +17,7 @@ namespace InvestAI
         private JsonNotifsService _notifsService;
         private PriceService _priceService;
         private System.Windows.Forms.Timer _notificationCheckTimer;
+        private NotifyIcon _trayIcon;
         private string selectedCoinSymbol;
         private bool isShowingFavorites = false;
 
@@ -52,6 +53,9 @@ namespace InvestAI
             // Initialize notification services
             _notifsService = new JsonNotifsService();
             _priceService = new PriceService();
+
+            // Initialize system tray
+            InitializeSystemTray();
 
             // Start notification checking timer
             _notificationCheckTimer = new System.Windows.Forms.Timer();
@@ -371,11 +375,29 @@ namespace InvestAI
             {
                 this.Invoke(new Action(() =>
                 {
+                    // Show tray notification if app is minimized
+                    if (!this.Visible && _trayIcon != null)
+                    {
+                        _trayIcon.ShowBalloonTip(5000, 
+                            $"Price Alert - {symbol}", 
+                            $"{symbol} has gone {condition} ${notif.targetPrice:F2}\nCurrent: ${currentPrice:F2}", 
+                            ToolTipIcon.Info);
+                    }
+                    
                     MessageBox.Show(message, "Price Alert Triggered", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }));
             }
             else
             {
+                // Show tray notification if app is minimized
+                if (!this.Visible && _trayIcon != null)
+                {
+                    _trayIcon.ShowBalloonTip(5000, 
+                        $"Price Alert - {symbol}", 
+                        $"{symbol} has gone {condition} ${notif.targetPrice:F2}\nCurrent: ${currentPrice:F2}", 
+                        ToolTipIcon.Info);
+                }
+                
                 MessageBox.Show(message, "Price Alert Triggered", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -383,8 +405,69 @@ namespace InvestAI
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
-            _notificationCheckTimer?.Stop();
-            _notificationCheckTimer?.Dispose();
+            
+            // Minimize to tray instead of closing
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                this.Hide();
+                _trayIcon.Visible = true;
+                _trayIcon.ShowBalloonTip(2000, "InvestAI", "Application minimized to tray. Price monitoring continues.", ToolTipIcon.Info);
+            }
+            else
+            {
+                // Actually closing - cleanup
+                _notificationCheckTimer?.Stop();
+                _notificationCheckTimer?.Dispose();
+                _trayIcon?.Dispose();
+            }
+        }
+
+        private void InitializeSystemTray()
+        {
+            _trayIcon = new NotifyIcon
+            {
+                Icon = SystemIcons.Application,
+                Visible = false,
+                Text = "InvestAI - Crypto Price Monitor"
+            };
+
+            // Create context menu for tray icon
+            var trayMenu = new ContextMenuStrip();
+            
+            var openItem = new ToolStripMenuItem("Open InvestAI");
+            openItem.Click += (s, e) =>
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+                this.BringToFront();
+                _trayIcon.Visible = false;
+            };
+            
+            var exitItem = new ToolStripMenuItem("Exit");
+            exitItem.Click += (s, e) =>
+            {
+                _trayIcon.Visible = false;
+                _notificationCheckTimer?.Stop();
+                _notificationCheckTimer?.Dispose();
+                _trayIcon?.Dispose();
+                Application.Exit();
+            };
+
+            trayMenu.Items.Add(openItem);
+            trayMenu.Items.Add(new ToolStripSeparator());
+            trayMenu.Items.Add(exitItem);
+
+            _trayIcon.ContextMenuStrip = trayMenu;
+
+            // Double-click to restore
+            _trayIcon.DoubleClick += (s, e) =>
+            {
+                this.Show();
+                this.WindowState = FormWindowState.Normal;
+                this.BringToFront();
+                _trayIcon.Visible = false;
+            };
         }
     }
 }
