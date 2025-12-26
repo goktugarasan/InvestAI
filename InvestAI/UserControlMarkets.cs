@@ -485,11 +485,11 @@ namespace InvestAI
                 cryptoChart.Plot.Axes.AutoScaleY(cryptoChart.Plot.Axes.Right);
 
                 cryptoChart.Plot.Axes.Right.TickGenerator = new ScottPlot.TickGenerators.NumericAutomatic();
-                cryptoChart.Plot.Axes.Right.TickLabelStyle.FontSize = 12;
+                cryptoChart.Plot.Axes.Right.TickLabelStyle.FontSize = 20;
                 cryptoChart.Plot.Axes.Right.TickLabelStyle.Bold = true;
                 cryptoChart.Plot.Axes.Right.TickLabelStyle.ForeColor = ScottPlot.Color.FromHex("#F0F4F8");
 
-                cryptoChart.Plot.Axes.Bottom.TickLabelStyle.FontSize = 11;
+                cryptoChart.Plot.Axes.Bottom.TickLabelStyle.FontSize = 18;
                 cryptoChart.Plot.Axes.Bottom.TickLabelStyle.ForeColor = ScottPlot.Color.FromHex("#F0F4F8");
 
                 cryptoChart.Plot.Axes.Left.TickLabelStyle.IsVisible = false;
@@ -558,10 +558,12 @@ namespace InvestAI
                         {
                             row.Cells[3].Style.ForeColor=profitGreen;
                             row.Cells[3].Value = $"+{row.Cells[3].Value}";
+                            FlashingColor(row.Cells[2], profitGreen);
                         }
                         else if(coin.Change < 0)
                         {
                             row.Cells[3].Style.ForeColor=lossRed;
+                            FlashingColor(row.Cells[2], lossRed);
                         }
                         break;
                     }
@@ -638,6 +640,18 @@ namespace InvestAI
             if (_loadingPanel != null)
                 _loadingPanel.Visible = false;
         }
+
+        private async void FlashingColor(DataGridViewCell cell, System.Drawing.Color flash)
+        {
+            if (cell == null) return;
+            cell.Style.ForeColor = flash;
+            await Task.Delay(500);
+            if (cell.DataGridView != null)
+            {
+                cell.Style.ForeColor = System.Drawing.Color.White;
+            }
+        }
+
 
         /// <summary>
         /// Updates the AI prediction label with the given text.
