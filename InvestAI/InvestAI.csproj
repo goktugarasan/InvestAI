@@ -10,7 +10,17 @@
 
   <ItemGroup>
     <PackageReference Include="Binance.Net" Version="11.11.0" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.20.1" />
     <PackageReference Include="ScottPlot.WinForms" Version="5.1.57" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="PredictAI\crypto_lstm_model.onnx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="PredictAI\crypto_lstm_model.onnx.data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
