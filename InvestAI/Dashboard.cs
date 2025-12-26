@@ -299,35 +299,40 @@ namespace InvestAI
         {
             try
             {
+                // Show loading state
+                userControlMarkets.SetPredictionText("AI's Prediction: Loading...", accentBlue);
+
                 double currentPrice = await Predictor.GetCurrentPriceAsync(symbol);
                 double predictedPrice = await Predictor.PredictAsync(symbol);
                 double percentageChange = ((predictedPrice - currentPrice) / currentPrice) * 100;
 
-                string coinName = symbol.Replace("USDT", "");
-                string direction = percentageChange >= 0 ? "📈" : "📉";
                 string changeText = percentageChange >= 0 ? $"+{percentageChange:F2}%" : $"{percentageChange:F2}%";
-                string title = percentageChange >= 0 ? $"🚀 {coinName} AI Prediction - Bullish" : $"📉 {coinName} AI Prediction - Bearish";
 
-                string message = $"{symbol} AI Prediction {direction}\n\n" +
-                                 $"Current Price: ${currentPrice:N2}\n" +
-                                 $"Predicted Close (Tomorrow): ${predictedPrice:N2}\n" +
-                                 $"Expected Change: {changeText}";
+                // Determine recommendation based on percentage change
+                string recommendation;
+                Color predictionColor;
+                if (percentageChange > 2)
+                {
+                    recommendation = "BUY";
+                    predictionColor = accentGreen;
+                }
+                else if (percentageChange < -2)
+                {
+                    recommendation = "SELL";
+                    predictionColor = accentRed;
+                }
+                else
+                {
+                    recommendation = "HOLD";
+                    predictionColor = Color.FromArgb(255, 193, 7); // Yellow/Gold
+                }
 
-                MessageBox.Show(
-                    message,
-                    title,
-                    MessageBoxButtons.OK,
-                    percentageChange >= 0 ? MessageBoxIcon.Information : MessageBoxIcon.Warning
-                );
+                string predictionText = $"AI's Prediction: ${predictedPrice:N2} ({changeText}) - {recommendation}";
+                userControlMarkets.SetPredictionText(predictionText, predictionColor);
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Failed to get AI prediction for {symbol}:\n{ex.Message}",
-                    "Prediction Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                userControlMarkets.SetPredictionText($"AI's Prediction: Error - {ex.Message}", accentRed);
             }
         }
 

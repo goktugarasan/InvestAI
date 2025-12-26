@@ -45,6 +45,7 @@
             button6 = new Button();
             button7 = new Button();
             splitContainer1 = new SplitContainer();
+            aiPredictionLabel = new Label();
             timer1 = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)cryptoGridView).BeginInit();
             flowLayoutPanel1.SuspendLayout();
@@ -208,11 +209,25 @@
             // 
             // splitContainer1.Panel2
             // 
+            splitContainer1.Panel2.Controls.Add(aiPredictionLabel);
             splitContainer1.Panel2.Controls.Add(flowLayoutPanel1);
             splitContainer1.Panel2.Controls.Add(cryptoChart);
             splitContainer1.Size = new Size(1568, 878);
             splitContainer1.SplitterDistance = 522;
             splitContainer1.TabIndex = 7;
+            // 
+            // aiPredictionLabel
+            // 
+            aiPredictionLabel.Dock = DockStyle.Bottom;
+            aiPredictionLabel.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            aiPredictionLabel.ForeColor = Color.FromArgb(64, 150, 255);
+            aiPredictionLabel.Location = new Point(0, 818);
+            aiPredictionLabel.Name = "aiPredictionLabel";
+            aiPredictionLabel.Padding = new Padding(10);
+            aiPredictionLabel.Size = new Size(1042, 60);
+            aiPredictionLabel.TabIndex = 2;
+            aiPredictionLabel.Text = "AI's Prediction:";
+            aiPredictionLabel.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // UserControlMarkets
             // 
@@ -252,5 +267,6 @@
         private System.Windows.Forms.Timer timer1;
         private Button button6;
         private Button button7;
+        private Label aiPredictionLabel;
     }
 }

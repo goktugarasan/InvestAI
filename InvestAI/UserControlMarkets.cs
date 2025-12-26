@@ -638,5 +638,28 @@ namespace InvestAI
             if (_loadingPanel != null)
                 _loadingPanel.Visible = false;
         }
+
+        /// <summary>
+        /// Updates the AI prediction label with the given text.
+        /// </summary>
+        public void SetPredictionText(string text)
+        {
+            if (aiPredictionLabel != null)
+            {
+                aiPredictionLabel.Text = text;
+            }
+        }
+
+        /// <summary>
+        /// Updates the AI prediction label with the given text and color.
+        /// </summary>
+        public void SetPredictionText(string text, System.Drawing.Color color)
+        {
+            if (aiPredictionLabel != null)
+            {
+                aiPredictionLabel.Text = text;
+                aiPredictionLabel.ForeColor = color;
+            }
+        }
     }
 }
