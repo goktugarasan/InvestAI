@@ -105,7 +105,7 @@ namespace InvestAI
             // Top Panel - Elevated glass card effect
             panel1.Height = 90;
             panel1.BackColor = Color.FromArgb(24, 27, 32);
-            panel1.Padding = new Padding(25, 15, 25, 15);
+            panel1.Padding = new Padding(25,10, 25, 15);
 
             // Subtle gradient-like border at bottom
             panel1.Paint += (s, e) =>
@@ -119,7 +119,7 @@ namespace InvestAI
             // App Name - Premium gradient-like glow
             appName.ForeColor = Color.FromArgb(90, 170, 255);
             appName.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
-            appName.Location = new Point(25, 22);
+            appName.Location = new Point(25, 10);
             appName.AutoSize = true;
 
             // Add disclaimer label in top panel
