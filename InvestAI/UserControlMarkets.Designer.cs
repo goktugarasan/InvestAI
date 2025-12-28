@@ -46,6 +46,7 @@
             button7 = new Button();
             splitContainer1 = new SplitContainer();
             aiPredictionLabel = new Label();
+            aiDisclaimerLabel = new Label();
             timer1 = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)cryptoGridView).BeginInit();
             flowLayoutPanel1.SuspendLayout();
@@ -209,6 +210,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            splitContainer1.Panel2.Controls.Add(aiDisclaimerLabel);
             splitContainer1.Panel2.Controls.Add(aiPredictionLabel);
             splitContainer1.Panel2.Controls.Add(flowLayoutPanel1);
             splitContainer1.Panel2.Controls.Add(cryptoChart);
@@ -221,13 +223,26 @@
             aiPredictionLabel.Dock = DockStyle.Bottom;
             aiPredictionLabel.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             aiPredictionLabel.ForeColor = Color.FromArgb(64, 150, 255);
-            aiPredictionLabel.Location = new Point(0, 818);
+            aiPredictionLabel.Location = new Point(0, 788);
             aiPredictionLabel.Name = "aiPredictionLabel";
             aiPredictionLabel.Padding = new Padding(10);
             aiPredictionLabel.Size = new Size(1042, 60);
             aiPredictionLabel.TabIndex = 2;
             aiPredictionLabel.Text = "AI's Prediction:";
             aiPredictionLabel.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // aiDisclaimerLabel
+            // 
+            aiDisclaimerLabel.Dock = DockStyle.Bottom;
+            aiDisclaimerLabel.Font = new Font("Segoe UI", 7.5F, FontStyle.Italic);
+            aiDisclaimerLabel.ForeColor = Color.FromArgb(156, 163, 175);
+            aiDisclaimerLabel.Location = new Point(0, 848);
+            aiDisclaimerLabel.Name = "aiDisclaimerLabel";
+            aiDisclaimerLabel.Padding = new Padding(10, 0, 10, 5);
+            aiDisclaimerLabel.Size = new Size(1042, 30);
+            aiDisclaimerLabel.TabIndex = 3;
+            aiDisclaimerLabel.Text = "⚠️ AI predictions may be highly inaccurate • Not investment advice • Data from Binance API";
+            aiDisclaimerLabel.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // UserControlMarkets
             // 
@@ -268,5 +283,6 @@
         private Button button6;
         private Button button7;
         private Label aiPredictionLabel;
+        private Label aiDisclaimerLabel;
     }
 }

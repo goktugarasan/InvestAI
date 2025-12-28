@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,6 +58,9 @@ namespace InvestAI
 
             // Initialize system tray
             InitializeSystemTray();
+
+            // Show disclaimer on first launch
+            ShowStartupDisclaimer();
 
             // Start notification checking timer
             _notificationCheckTimer = new System.Windows.Forms.Timer();
@@ -117,6 +121,19 @@ namespace InvestAI
             appName.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
             appName.Location = new Point(25, 22);
             appName.AutoSize = true;
+
+            // Add disclaimer label in top panel
+            var disclaimerTopLabel = new Label
+            {
+                Text = "⚠️ Data from Binance API • Not Financial Advice",
+                ForeColor = Color.FromArgb(180, 180, 180),
+                Font = new Font("Segoe UI", 8F, FontStyle.Italic),
+                AutoSize = true,
+                Location = new Point(25, 65),
+                Cursor = Cursors.Hand
+            };
+            disclaimerTopLabel.Click += (s, e) => ShowDisclaimer();
+            panel1.Controls.Add(disclaimerTopLabel);
 
             // Favorite Button - Glassmorphism style
             favoriteButton.Size = new Size(200, 44);
@@ -488,6 +505,9 @@ namespace InvestAI
                 this.BringToFront();
                 _trayIcon.Visible = false;
             };
+
+            var disclaimerItem = new ToolStripMenuItem("⚠️ Disclaimer");
+            disclaimerItem.Click += (s, e) => ShowDisclaimer();
             
             var exitItem = new ToolStripMenuItem("Exit");
             exitItem.Click += (s, e) =>
@@ -500,6 +520,7 @@ namespace InvestAI
             };
 
             trayMenu.Items.Add(openItem);
+            trayMenu.Items.Add(disclaimerItem);
             trayMenu.Items.Add(new ToolStripSeparator());
             trayMenu.Items.Add(exitItem);
 
@@ -513,6 +534,89 @@ namespace InvestAI
                 this.BringToFront();
                 _trayIcon.Visible = false;
             };
+        }
+
+        private void ShowDisclaimer()
+        {
+            string disclaimer = @"⚠️ IMPORTANT DISCLAIMER
+
+📊 Price Data Accuracy:
+• All cryptocurrency price data is provided by Binance API
+• Data may be delayed, inaccurate, or outdated
+• Price information is for informational purposes only
+• Always verify prices on official exchange platforms before trading
+
+🤖 AI Predictions:
+• AI predictions are experimental and may be inaccurate
+• AI analysis should NOT be used as sole basis for investment decisions
+• Past performance does not guarantee future results
+• Cryptocurrency markets are highly volatile and unpredictable
+
+⚖️ Investment Risk:
+• Trading cryptocurrencies involves substantial risk of loss
+• Only invest what you can afford to lose
+• This application is for informational and educational purposes only
+• Not financial advice - consult a professional financial advisor
+
+📡 Data Source:
+• Powered by Binance Public API
+• No guarantee of data availability or accuracy
+• API rate limits may affect data updates
+
+By using this application, you acknowledge these risks and limitations.";
+
+            MessageBox.Show(disclaimer, "InvestAI - Disclaimer", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
+        private void ShowStartupDisclaimer()
+        {
+            string settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "disclaimer_shown.txt");
+            
+            if (!File.Exists(settingsPath))
+            {
+                string disclaimer = @"⚠️ WELCOME TO INVESTAI - PLEASE READ
+
+This application provides cryptocurrency market data and analysis tools.
+
+📊 DATA DISCLAIMER:
+All price data is sourced from Binance API and may be:
+• Delayed or inaccurate
+• Subject to API rate limits
+• For informational purposes only
+
+🤖 AI PREDICTIONS:
+Any AI-generated predictions or analysis:
+• Are experimental and may be highly inaccurate
+• Should NOT be used as investment advice
+• Do not guarantee future performance
+
+⚠️ INVESTMENT WARNING:
+Cryptocurrency trading involves substantial risk of loss.
+This app is for educational purposes only.
+Always do your own research and consult professionals.
+
+NOT FINANCIAL ADVICE.
+
+Click OK to acknowledge and continue.";
+
+                var result = MessageBox.Show(disclaimer, 
+                    "InvestAI - Important Disclaimer", 
+                    MessageBoxButtons.OKCancel, 
+                    MessageBoxIcon.Warning);
+
+                if (result == DialogResult.OK)
+                {
+                    try
+                    {
+                        File.WriteAllText(settingsPath, DateTime.Now.ToString());
+                    }
+                    catch { }
+                }
+                else
+                {
+                    Application.Exit();
+                }
+            }
         }
     }
 }
