@@ -1,2 +1,2 @@
 # InvestAI
-AI-powered stock &amp; crypto tracker. 
+AI-powered crypto tracker application. 
